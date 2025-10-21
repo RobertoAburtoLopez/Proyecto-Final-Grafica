@@ -255,8 +255,6 @@ void RenderMeshWithTexture(Mesh* mesh, glm::vec3 color, glm::vec3 position, glm:
 	mesh->RenderMesh();
 }
 
-
-
 // Main
 int main()
 {
