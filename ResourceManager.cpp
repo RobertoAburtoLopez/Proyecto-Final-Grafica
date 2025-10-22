@@ -31,7 +31,7 @@ ResourceManager::ResourceManager() {
 
     // Modelos de Estructuras
     Cuadrilatero.LoadModel("Modelos/Estructuras/Cuadrilatero.obj");
-    PiramideChicken.LoadModel("Modelos/Estructuras/Piramide.obj");
+    PiramideChicken.LoadModel("Modelos/Prehispanicos/Piramide de la Venta/Piramide de la Venta.obj");
     PiramideChilly.LoadModel("Modelos/Estructuras/Piramide Chilly Willy.obj");
     PiramideRikoche.LoadModel("Modelos/Estructuras/Piramide Rikoche.obj");
     PiramideTotoro.LoadModel("Modelos/Estructuras/Piramide Totoro.obj");
