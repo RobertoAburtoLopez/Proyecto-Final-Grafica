@@ -27,7 +27,13 @@ ResourceManager::ResourceManager() {
     Totoro_chiquito.LoadModel("Modelos/Totoro/Totoro_chiquito.obj");
 
     // Modelos del Zoo
-    animales.LoadModel("Modelos/Zoo/.obj");
+    Zorro.LoadModel("Modelos/Zoo/Zorro.obj");
+    Tigre.LoadModel("Modelos/Zoo/Tigre.obj");
+    Rinoceronte.LoadModel("Modelos/Zoo/Rinoceronte.obj");
+    Pantera.LoadModel("Modelos/Zoo/Pantera.obj");
+    Panda_Rojo.LoadModel("Modelos/Zoo/Panda Rojo.obj");
+    Orangutan.LoadModel("Modelos/Zoo/Orangutan.obj");
+    Mapache.LoadModel("Modelos/Zoo/Mapache.obj");
 
     // Modelos de Estructuras
     Cuadrilatero.LoadModel("Modelos/Estructuras/Cuadrilatero.obj");

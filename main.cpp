@@ -225,9 +225,8 @@ void SetLights()
 }
 
 // Función - Renderizar modelo
-void RenderModel(GLuint uniformModel, glm::vec3 origen, glm::vec3 pos, Model& modelRender)
+void RenderModel(glm::mat4 model, GLuint uniformModel, glm::vec3 origen, glm::vec3 pos, Model& modelRender)
 {
-	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, origen + pos);
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	modelRender.RenderModel();
@@ -269,9 +268,6 @@ int main()
 	CreateShaders();
 	SetLights();
 
-	// Ajustes para la cámara
-	camera = Camera(glm::vec3(0.0f, 25.0f, 20.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 3.85f, 0.45f);
-
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
@@ -287,9 +283,10 @@ int main()
 	
 	// Matrices para los modelos ---------------------------------------------------------------
 	glm::mat4 modelBase(1.0);
+	glm::mat4 modelChicken(1.0);
 
 	// Personajes principales (posiciones de cada cuadrante)
-	glm::vec3 origenChicken = glm::vec3(-490.0f, 0.0f, -490.0f);	// Cuadrante superior izq
+	glm::vec3 origenChicken = glm::vec3(-490.0f, 0.0f, -490.0f);// Cuadrante superior izq
 	glm::vec3 origenChilly = glm::vec3(-490.0f, 0.0f, 490.0f);	// Cuadrante superior der
 	glm::vec3 origenRikoche = glm::vec3(490.0f, 0.0f, 490.0f);	// Cuadrante inferior der
 	glm::vec3 origenTotoro = glm::vec3(490.0f, 0.0f, -490.0f);	// Cuadrante inferior izq
@@ -299,6 +296,9 @@ int main()
 	glm::vec3 pos, scal;
 	glm::vec3 origen = glm::vec3(0.0f, 0.0f, 0.0f);
 	GLfloat angulo = 0.0f;
+
+	// Ajustes para la cámara
+	camera = Camera(origenChicken + glm::vec3(0.0f, 250.0f, 100.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 3.85f, 0.45f);
 
 	while (!mainWindow.getShouldClose()) // Loop Principal -------------------------------------
 	{
@@ -350,60 +350,95 @@ int main()
 		RenderMeshWithTexture(meshList[2], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 
 			&Material_opaco, &resources.pisoTexture);
 
-		// Modelos --------------------------------------------------------------------------------------
+		// Modelos ---------------------------------------------------------------------------------------
 
-		// Cuadrilatero
+		// -------------------------------------------------------------------- Zoológico
+
+		// Zorro
 		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		RenderModel(uniformModel, origen, pos, resources.Cuadrilatero);
+		pos = glm::vec3(50.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Zorro);
 
-		// ------------------------------------------------------------------ Universo de Chicken Little
+		// Tigre
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(45.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Tigre);
+
+		// Rinoceronte
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(40.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Rinoceronte);
+
+		// Pantera
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(35.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Pantera);
+
+		// Panda Rojo
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(30.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Panda_Rojo);
+
+		// Orangutan
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(25.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Orangutan);
+
+		// Pedro
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(20.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Mapache);
+
+		// -------------------------------------------------------------------- Universo de Chicken Little
 		
 		// Chicken Little
 		pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenChicken, pos, resources.Chicken_Little);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Chicken_Little);
 
 		// Piramide de Chicken Little
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		RenderModel(uniformModel, origenChicken, pos, resources.PiramideChicken);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PiramideChicken);
 
-		// ------------------------------------------------------------------ Universo de Chilly Willy
+		// Personajes secundarios
 
-		// Chilly Willy
-		pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenChilly, pos, resources.Chilly_Willy);
 
-		// Piramide de Chilli Willy
-		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		RenderModel(uniformModel, origenChilly, pos, resources.PiramideChicken);
+		//// ------------------------------------------------------------------ Universo de Chilly Willy
 
-		// ------------------------------------------------------------------ Universo de Rikoche 
-		
-		// Rikoche
-		pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenRikoche, pos, resources.Rikoche);
+		//// Chilly Willy
+		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
+		//RenderModel(uniformModel, origenChilly, pos, resources.Chilly_Willy);
 
-		// Piramide de Rikoche
-		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		RenderModel(uniformModel, origenRikoche, pos, resources.PiramideChicken);
+		//// Piramide de Chilli Willy
+		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		//RenderModel(uniformModel, origenChilly, pos, resources.PiramideChicken);
 
-		// ------------------------------------------------------------------ Universo de Totoro 
-		
-		// Totoro (Ō-Totoro)
-		pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenTotoro, pos, resources.Totoro);
+		//// ------------------------------------------------------------------ Universo de Rikoche 
+		//
+		//// Rikoche
+		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
+		//RenderModel(uniformModel, origenRikoche, pos, resources.Rikoche);
 
-		// Totoro mediano (Chū-Totoro)
-		pos = glm::vec3(10.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_mediano);
+		//// Piramide de Rikoche
+		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		//RenderModel(uniformModel, origenRikoche, pos, resources.PiramideChicken);
 
-		// Totoro chiquito (Chibi-Totoro)
-		pos = glm::vec3(-7.0f, 250.0f, 20.0f);
-		RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_chiquito);
+		//// ------------------------------------------------------------------ Universo de Totoro 
+		//
+		//// Totoro (Ō-Totoro)
+		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
+		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro);
 
-		// Piramide de Totoro
-		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		RenderModel(uniformModel, origenTotoro, pos, resources.PiramideChicken);
+		//// Totoro mediano (Chū-Totoro)
+		//pos = glm::vec3(10.0f, 250.0f, 20.0f);
+		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_mediano);
+
+		//// Totoro chiquito (Chibi-Totoro)
+		//pos = glm::vec3(-7.0f, 250.0f, 20.0f);
+		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_chiquito);
+
+		//// Piramide de Totoro
+		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		//RenderModel(uniformModel, origenTotoro, pos, resources.PiramideChicken);
 
 		// Modelos con Blending (transparencia o traslucidez) ----------------------------------
 		glEnable(GL_BLEND);

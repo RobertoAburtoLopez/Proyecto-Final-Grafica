@@ -23,7 +23,7 @@ public:
     Model Totoro, Totoro_mediano, Totoro_chiquito;
 
     // Modelos del Zoo
-    Model animales;
+    Model Zorro, Tigre, Rinoceronte, Pantera, Panda_Rojo, Orangutan, Mapache;
 
     // Modelos de Estructuras
     Model Cuadrilatero;

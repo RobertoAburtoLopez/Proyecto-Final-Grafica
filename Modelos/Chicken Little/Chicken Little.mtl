@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd lentes.png
+map_Kd Chicken_lentes.png
 
 newmtl Material_1.001
 Ns 159.999985
@@ -19,7 +19,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd ojos.png
+map_Kd Chicken_ojos.png
 
 newmtl Material_10.001
 Ns 159.999985
@@ -29,7 +29,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd cejas.png
+map_Kd Chicken_cejas.png
 
 newmtl Material_11.001
 Ns 159.999985
@@ -39,7 +39,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd cabello.png
+map_Kd Chicken_cabello.png
 
 newmtl Material_12.001
 Ns 159.999985
@@ -49,7 +49,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd cabeza.png
+map_Kd Chicken_cabeza.png
 
 newmtl Material_2.001
 Ns 159.999985
@@ -59,7 +59,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd base_ojos.png
+map_Kd Chicken_base_ojos.png
 
 newmtl Material_3.001
 Ns 159.999985
@@ -79,7 +79,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd lengua.png
+map_Kd Chicken_lengua.png
 
 newmtl Material_5.001
 Ns 159.999985
@@ -89,7 +89,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd patas.png
+map_Kd Chicken_patas.png
 
 newmtl Material_6.001
 Ns 159.999985
@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd cola.png
+map_Kd Chicken_cola.png
 
 newmtl Material_7.002
 Ns 159.999985
@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd ropa_beisbol.png
+map_Kd Chicken_ropa_beisbol.png
 
 newmtl Material_8.001
 Ns 159.999985
@@ -119,7 +119,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
-map_Kd cresta.png
+map_Kd Chicken_cresta.png
 
 newmtl Material_9.001
 Ns 159.999985
