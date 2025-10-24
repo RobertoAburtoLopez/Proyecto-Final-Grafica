@@ -26,28 +26,28 @@
 #include "ResourceManager.h"		// Recursos
 //#include<assimp/Importer.hpp>		// Para probar el importer
 
-// Ventana -----------------------------------------------------------------------
+// ------------------------------------------------------------------ Ventana
 Window mainWindow;
 
 std::vector<Mesh*> meshList;		// Vector de Meshs
 std::vector<Shader> shaderList;		// Vector de Shaders
 
-// Cámara -------------------------------------------------------------------------
+// ------------------------------------------------------------------ Camara
 Camera camera;
 
 static double limitFPS = 1.0 / 60.0;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
-// Shader -------------------------------------------------------------------------
-static const char* vShader = "shaders/shader_light.vert";	// Vertex Shader
-static const char* fShader = "shaders/shader_light.frag";	// Fragment Shader
+// ------------------------------------------------------------------ Shader
+static const char* vShader = "shaders/shader_light.vert";
+static const char* fShader = "shaders/shader_light.frag";
 
-// Materiales ---------------------------------------------------------------------
+// ------------------------------------------------------------------ Material
 Material Material_brillante;
 Material Material_opaco;
 
-// Iluminación --------------------------------------------------------------------
+// ------------------------------------------------------------------ Iluminacion
 unsigned int pointLightCount = 0;
 unsigned int spotLightCount = 0;
 
@@ -57,7 +57,7 @@ SpotLight PL_1[MAX_SPOT_LIGHTS];			//.
 SpotLight SP_RGB[MAX_SPOT_LIGHTS];			// Arreglos de luces SpotLight
 SpotLight SP_lamparas[MAX_SPOT_LIGHTS];		//.
 
-// ---------------------------------------------------------------------------------
+// ------------------------------------------------------------------ Funciones
 
 // Función - Cálculo de Normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -91,42 +91,25 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 // Función - Creamos las primitivas
 void CreatePrimitives()
 {
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
-
-	GLfloat vertices[] = {
+	// --------------------------------------------------------- Suelo
+	GLfloat vertices_Suelo[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
+			-10.0f, 0.0f, -10.0f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f, // indice 0 - arriba a la izquierda
+			10.0f, 0.0f, -10.0f,	1.0f, 1.0f,		0.0f, -1.0f, 0.0f, // indice 1 - arriba a la derecha
+			-10.0f, 0.0f, 10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f, // indice 2 - abajo a la izquierda
+			10.0f, 0.0f, 10.0f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f  // indice 3 - abajo a la derecha
 	};
-
-	unsigned int floorIndices[] = {
+	unsigned int indices_Suelo[] = {
 		0, 2, 1,
 		1, 2, 3
 	};
 
-	GLfloat floorVertices[] = { // Suelo
-		//	x      y      z			u	  v			nx	  ny    nz
-			-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-			10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-			-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-			10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
-	};
+	Mesh* Suelo = new Mesh();
+	Suelo->CreateMesh(vertices_Suelo, indices_Suelo, 32, 6);
+	meshList.push_back(Suelo);
 
-	unsigned int vegetacionIndices[] = {
-	   0, 1, 2,
-	   0, 2, 3,
-	   4,5,6,
-	   4,6,7
-	};
-
-	GLfloat vegetacionVertices[] = {
+	// --------------------------------------------------------- Vegetación
+	GLfloat vertices_Vegetacion[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
 			-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -138,27 +121,18 @@ void CreatePrimitives()
 			0.0f, 0.5f, 0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
 	};
+	unsigned int indices_Vegetacion[] = {
+	   0, 1, 2,
+	   0, 2, 3,
+	   4,5,6,
+	   4,6,7
+	};
 
-	Mesh* obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj1);
+	Mesh* Vegetacion = new Mesh();
+	Vegetacion->CreateMesh(vertices_Vegetacion, indices_Vegetacion, 64, 12);
+	meshList.push_back(Vegetacion);
 
-	Mesh* obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj2);
-
-	Mesh* obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);
-
-	Mesh* obj4 = new Mesh();
-	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);
-
-	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
-	calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
-
+	calcAverageNormals(indices_Vegetacion, 12, vertices_Vegetacion, 64, 8, 5);
 }
 
 // Función - Creamos los shaders
@@ -254,7 +228,7 @@ void RenderMeshWithTexture(Mesh* mesh, glm::vec3 color, glm::vec3 position, glm:
 	mesh->RenderMesh();
 }
 
-// Main
+// -------------------------------------------------------------------------- Main
 int main()
 {
 	// Iniciamos el contexto
@@ -264,9 +238,9 @@ int main()
 	// Recursos
 	ResourceManager resources;
 
-	CreatePrimitives();
-	CreateShaders();
-	SetLights();
+	CreatePrimitives();				// Cargamos las primitivas en meshList
+	CreateShaders();				// Creamos los shaders
+	SetLights();					// Creamos las luces
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -277,37 +251,51 @@ int main()
 
 	// Vector de proyección
 	glm::mat4 projection = glm::perspective(
-			45.0f, 
-			(GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(),
-			0.1f, 3000.0f);
+			45.0f,				// Ángulo de vision
+			(GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), // Aspecto
+			0.1f, 2800.0f);		// Alcance: cerca | lejos
 	
-	// Matrices para los modelos ---------------------------------------------------------------
+	// Matrices para los modelos
 	glm::mat4 modelBase(1.0);
-	glm::mat4 modelChicken(1.0);
+	glm::mat4 modelZoo(1.0);		// Matriz para los animales
+	glm::mat4 modelChicken(1.0);	// Matriz para los modelos de Chicken Little
+	glm::mat4 modelTotoro(1.0);		// Matriz para los modelos de Totoro
+	glm::mat4 modelChilly(1.0);		// Matriz para los modelos de Chilly Willy
+	glm::mat4 modelRikoche(1.0);	// Matriz para los modelos de Rikoche
 
-	// Personajes principales (posiciones de cada cuadrante)
-	glm::vec3 origenChicken = glm::vec3(-490.0f, 0.0f, -490.0f);// Cuadrante superior izq
-	glm::vec3 origenChilly = glm::vec3(-490.0f, 0.0f, 490.0f);	// Cuadrante superior der
-	glm::vec3 origenRikoche = glm::vec3(490.0f, 0.0f, 490.0f);	// Cuadrante inferior der
-	glm::vec3 origenTotoro = glm::vec3(490.0f, 0.0f, -490.0f);	// Cuadrante inferior izq
+	// Posicion del origen
+	glm::vec3 origen = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	// Posiciones de cada cuadrante
+	glm::vec3 origenChicken = glm::vec3(-680.0f, 0.0f, -690.0f);// Cuadrante superior izq
+	glm::vec3 origenChilly = glm::vec3(-690.0f, 0.0f, 690.0f);	// Cuadrante inferior izq
+	glm::vec3 origenRikoche = glm::vec3(720.0f, 0.0f, 700.0f);	// Cuadrante inferior der
+	glm::vec3 origenTotoro = glm::vec3(690.0f, 0.0f, -690.0f);	// Cuadrante superior der
+
+	// Posiciones para los animales
+	std::vector<glm::vec3> posAnimals;
 
 	// Variables auxiliares
-	glm::vec3 color = glm::vec3(1.0f);
-	glm::vec3 pos, scal;
-	glm::vec3 origen = glm::vec3(0.0f, 0.0f, 0.0f);
-	GLfloat angulo = 0.0f;
-
+	glm::vec3 color = glm::vec3(1.0f);		// Para mandar un color
+	glm::vec3 pos = glm::vec3(1.0f);		// Para mover los modelos
+	glm::vec3 scal = glm::vec3(1.0f);		// Para escalar los modelos
+	float rot = 0.0f;						// Para rotar los modelos
+	
 	// Ajustes para la cámara
-	camera = Camera(origenChicken + glm::vec3(0.0f, 250.0f, 100.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 3.85f, 0.45f);
+	camera = Camera(
+		origen + glm::vec3(0.0f, 100.0f, 100.0f),// Posicion inicial
+		glm::vec3(0.0f, 1.0f, 0.0f),			// Direccion de nuestro "arriba"
+		-60.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
+		4.0f, 0.45f);					// Velocidad de movimiento | Velocidad de rotacion
 
-	while (!mainWindow.getShouldClose()) // Loop Principal -------------------------------------
+	while (!mainWindow.getShouldClose()) // Loop Principal 
 	{
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
-		// Recibir eventos del usuario ---------------------------------------------------------
+		// Recibir eventos del usuario 
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
@@ -315,14 +303,14 @@ int main()
 		// Limpiamos la window
 		mainWindow.Clear();
 
-		// Instanciamos el Skybox --------------------------------------------------------------
+		// Dibujamos el Skybox 
 		resources.skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 
-		// Configuracion para la iluminación ---------------------------------------------------
+		// Configuracion para la iluminación
 		
 		// código...
 		
-		// Info en el Shader -------------------------------------------------------------------
+		// Info en el Shader 
 		shaderList[0].UseShader();
 		uniformModel =				shaderList[0].GetModelLocation();				// modelo
 		uniformProjection =			shaderList[0].GetProjectionLocation();			// proyección
@@ -332,115 +320,102 @@ int main()
 		uniformSpecularIntensity =	shaderList[0].GetSpecularIntensityLocation();	// intensidad especular
 		uniformShininess =			shaderList[0].GetShininessLocation();			// brillo
 
-		shaderList[0].SetDirectionalLight(&mainLight);						// iluminación direccional
-		shaderList[0].SetPointLights(PL_0, pointLightCount);				// iluminación pointlight
-		shaderList[0].SetSpotLights(SP_lamparas, spotLightCount);			// iluminación spotlight
+		shaderList[0].SetDirectionalLight(&mainLight);								// iluminación direccional
+		shaderList[0].SetPointLights(PL_0, pointLightCount);						// iluminación pointlight
+		shaderList[0].SetSpotLights(SP_lamparas, spotLightCount);					// iluminación spotlight
 
 		glUniformMatrix4fv(uniformProjection,	1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView,			1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// Primitivas -----------------------------------------------------------------------------------
+		// ------------------------------------------------------------------ Primitivas
+
+		/*
+				Mesh	indice
+			Suelo		 [0]
+			Vegetacion   [1]
+				
+		*/
 
 		// Suelo
 		modelBase = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		scal = glm::vec3(90.0f, 1.0f, 90.0f);
+		scal = glm::vec3(100.0f, 1.0f, 100.0f);
 
-		RenderMeshWithTexture(meshList[2], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 
-			&Material_opaco, &resources.pisoTexture);
+		RenderMeshWithTexture(meshList[0], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 
+			&Material_opaco, &resources.croquisTexture);
 
-		// Modelos ---------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------ Zoológico
+		std::vector<glm::vec3> posAnimals = {
+			{50.0f, 0.0f, 80.0f},		// Zorro
+			{40.0f, 0.0f, 80.0f},		// Tigre
+			{30.0f, 0.0f, 80.0f},		// Rinoceronte
+			{20.0f, 0.0f, 80.0f},		// Pantera
+			{10.0f, 0.0f, 80.0f},		// Panda Rojo
+			{0.0f, 0.0f, 80.0f},		// Orangutan
+			{-10.0f, 0.0f, 80.0f}		// Pedro
+		};
+		for (size_t i = 0; i < resources.Zoologico.size(); i++)
+			RenderModel(modelZoo, uniformModel, origen, posAnimals[i], resources.Zoologico[i].modelo);
 
-		// -------------------------------------------------------------------- Zoológico
+		// ------------------------------------------------------------------ Arena Central
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
 
-		// Zorro
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(50.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Zorro);
-
-		// Tigre
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(45.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Tigre);
-
-		// Rinoceronte
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(40.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Rinoceronte);
-
-		// Pantera
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(35.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Pantera);
-
-		// Panda Rojo
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(30.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Panda_Rojo);
-
-		// Orangutan
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(25.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Orangutan);
-
-		// Pedro
-		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(20.0f, 0.0f, 0.0f);
-		RenderModel(modelBase, uniformModel, origen, pos, resources.Mapache);
-
-		// -------------------------------------------------------------------- Universo de Chicken Little
+		// ------------------------------------------------------------------ Universo de Chicken Little
 		
-		// Chicken Little
-		pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Chicken_Little);
-
 		// Piramide de Chicken Little
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PiramideChicken);
 
+		// Chicken Little
+		pos = glm::vec3(-10.0f, 35.0f, 25.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Chicken_Little);
+
 		// Personajes secundarios
+		// Edificios
+		// Vehiculos
+		// Árboles
+	
+		// ------------------------------------------------------------------ Universo de Chilly Willy
 
+		// Piramide de Chilli Willy
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.PiramideChilly);
 
-		//// ------------------------------------------------------------------ Universo de Chilly Willy
+		// Chilly Willy
+		pos = glm::vec3(10.0f, 35.0f, 25.0f);
+		RenderModel(modelChilly, uniformModel, origen, pos, resources.Chilly_Willy);
 
-		//// Chilly Willy
-		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		//RenderModel(uniformModel, origenChilly, pos, resources.Chilly_Willy);
+		// ------------------------------------------------------------------ Universo de Rikoche 
+		
+		// Piramide de Rikoche
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelRikoche, uniformModel, origenRikoche, pos, resources.PiramideRikoche);
 
-		//// Piramide de Chilli Willy
-		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		//RenderModel(uniformModel, origenChilly, pos, resources.PiramideChicken);
+		// Rikoche
+		pos = glm::vec3(0.0f, 35.0f, 35.0f);
+		RenderModel(modelRikoche, uniformModel, origen, pos, resources.Rikoche);
 
-		//// ------------------------------------------------------------------ Universo de Rikoche 
-		//
-		//// Rikoche
-		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		//RenderModel(uniformModel, origenRikoche, pos, resources.Rikoche);
+		// ------------------------------------------------------------------ Universo de Totoro 
 
-		//// Piramide de Rikoche
-		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		//RenderModel(uniformModel, origenRikoche, pos, resources.PiramideChicken);
+		// Piramide de Totoro
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.PiramideTotoro);
 
-		//// ------------------------------------------------------------------ Universo de Totoro 
-		//
-		//// Totoro (Ō-Totoro)
-		//pos = glm::vec3(0.0f, 250.0f, 20.0f);
-		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro);
+		// Totoro (Ō-Totoro)
+		pos = glm::vec3(0.0f, 30.0f, 20.0f);
+		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro);
 
-		//// Totoro mediano (Chū-Totoro)
-		//pos = glm::vec3(10.0f, 250.0f, 20.0f);
-		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_mediano);
+		// Totoro mediano (Chū-Totoro)
+		pos = glm::vec3(10.0f, 35.0f, 20.0f);
+		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_mediano);
 
-		//// Totoro chiquito (Chibi-Totoro)
-		//pos = glm::vec3(-7.0f, 250.0f, 20.0f);
-		//RenderModel(uniformModel, origenTotoro, pos, resources.Totoro_chiquito);
+		// Totoro chiquito (Chibi-Totoro)
+		pos = glm::vec3(-7.0f, 35.0f, 20.0f);
+		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
 
-		//// Piramide de Totoro
-		//pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		//RenderModel(uniformModel, origenTotoro, pos, resources.PiramideChicken);
-
-		// Modelos con Blending (transparencia o traslucidez) ----------------------------------
+		// ------------------------------------------------------------------ Modelos con Blending (transparencia o traslucidez)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -448,7 +423,7 @@ int main()
 
 		glDisable(GL_BLEND);
 
-		// End of program ----------------------------------------------------------------------
+		// ------------------------------------------------------------------ End of program 
 		glUseProgram(0);
 		mainWindow.swapBuffers();
 	}	

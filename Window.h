@@ -22,20 +22,6 @@ public:
 	GLfloat getrotay() { return rotay; }
 	GLfloat getrotax() { return rotax; }
 	GLfloat getrotaz() { return rotaz; }
-	GLfloat getarticulacion1() { return articulacion1; }
-	GLfloat getarticulacion2() { return articulacion2; }
-	GLfloat getarticulacion3() { return articulacion3; }
-	GLfloat getarticulacion4() { return articulacion4; }
-	GLfloat getarticulacion5() { return articulacion5; }
-	GLfloat getarticulacion6() { return articulacion6; }
-	GLfloat getrueda1() { return rueda1; }
-	GLfloat getrueda2() { return rueda2; }
-	GLfloat getrueda3() { return rueda3; }
-	GLfloat getrueda4() { return rueda4; }
-	GLfloat getcola() { return cola; }
-
-	//helicoptero
-	GLfloat getPoszHelicoptero() { return poszHelicoptero; }
 
 	~Window();
 private: 
@@ -44,11 +30,8 @@ private:
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	void createCallbacks();
-	GLfloat rotax, rotay, rotaz, articulacion1, articulacion2, articulacion3, articulacion4, articulacion5, articulacion6, rueda1, rueda2, rueda3, rueda4, cola;
-	
-	//helicoptero
-	GLfloat poszHelicoptero = 0.0f;
-	
+	GLfloat rotax, rotay, rotaz;
+
 	GLfloat lastX;
 	GLfloat lastY;
 	GLfloat xChange;
