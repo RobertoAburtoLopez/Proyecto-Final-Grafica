@@ -5,6 +5,13 @@
 #include <vector>
 #include <string>
 
+struct Animal 
+{
+    std::string nombre;
+    std::string ruta;
+    Model modelo;
+};
+
 class ResourceManager {
 public:
     // Constructor
@@ -14,7 +21,19 @@ public:
     Skybox skybox;
 
     // Texturas
-    Texture brickTexture, dirtTexture, plainTexture, pisoTexture;
+    Texture plainTexture;
+    Texture pastoTexture;
+    Texture croquisTexture;
+
+    // Modelos para las piramides
+    Model ArenaCentral;
+    Model PiramideChicken;
+    Model PiramideChilly;
+    Model PiramideRikoche;
+    Model PiramideTotoro;
+
+    // Lista de modelos para el Zoológico
+    std::vector<Animal> Zoologico;
 
     // Modelos Principales
     Model Chicken_Little;
@@ -22,14 +41,7 @@ public:
     Model Rikoche;
     Model Totoro, Totoro_mediano, Totoro_chiquito;
 
-    // Modelos del Zoo
-    Model animales;
-
-    // Modelos de Estructuras
-    Model Cuadrilatero;
-    Model PiramideChicken;
-    Model PiramideChilly;
-    Model PiramideRikoche;
-    Model PiramideTotoro;
+    // Modelos de cada universo
     
+    //...
 };
