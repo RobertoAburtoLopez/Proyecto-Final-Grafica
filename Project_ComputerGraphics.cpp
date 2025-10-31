@@ -87,7 +87,7 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
 	}
 }
-udshaskjdashas
+
 // Función - Creamos las primitivas
 void CreatePrimitives()
 {

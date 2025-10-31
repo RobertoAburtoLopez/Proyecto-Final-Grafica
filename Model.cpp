@@ -3,8 +3,10 @@
 
 
 
-Model::Model()
+Model::Model(){}
+Model::Model(const std::string& modelPath) 
 {
+	LoadModel(modelPath);
 }
 
 void Model::LoadModel(const std::string & fileName)

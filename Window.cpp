@@ -8,16 +8,6 @@ Window::Window()
 	rotax = 0.0f;
 	rotay = 0.0f;
 	rotaz = 0.0f;
-	articulacion1 = 0.0f;
-	articulacion2 = 0.0f;
-	articulacion3 = 0.0f;
-	articulacion4 = 0.0f;
-	articulacion5 = 0.0f;
-	articulacion6 = 0.0f;
-	rueda1 = 0.0f;
-	rueda2 = 0.0f;
-	rueda3 = 0.0f;
-	rueda4 = 0.0f;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -108,7 +98,7 @@ GLfloat Window::getYChange()
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
+	
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -120,15 +110,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_U)
 	{
 		theWindow-> muevex -= 1.0;
-	}
-	//movimiento helicoptero
-	if (key == GLFW_KEY_I)
-	{
-		theWindow->poszHelicoptero += 4.0f;
-	}
-	if (key == GLFW_KEY_K)
-	{
-		theWindow->poszHelicoptero -= 3.0f;
 	}
 	if (key >= 0 && key < 1024)
 	{
