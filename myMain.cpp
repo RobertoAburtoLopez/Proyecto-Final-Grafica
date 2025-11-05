@@ -200,7 +200,7 @@ void SetLights()
 
 // Función - Renderizar modelo
 void RenderModel(glm::mat4 model, GLuint uniformModel, glm::vec3 origen, glm::vec3 pos, Model& modelRender)
-{
+{	
 	model = glm::translate(model, origen + pos);
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	modelRender.RenderModel();
@@ -267,7 +267,7 @@ int main()
 	glm::vec3 origen = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	// Posiciones de cada cuadrante
-	glm::vec3 origenChicken = glm::vec3(-680.0f, 0.0f, -690.0f);// Cuadrante superior izq
+	glm::vec3 origenChicken = glm::vec3(-680.0f, 0.0f, -695.0f);// Cuadrante superior izq
 	glm::vec3 origenChilly = glm::vec3(-690.0f, 0.0f, 690.0f);	// Cuadrante inferior izq
 	glm::vec3 origenRikoche = glm::vec3(720.0f, 0.0f, 700.0f);	// Cuadrante inferior der
 	glm::vec3 origenTotoro = glm::vec3(690.0f, 0.0f, -690.0f);	// Cuadrante superior der
@@ -283,9 +283,9 @@ int main()
 	
 	// Ajustes para la cámara
 	camera = Camera(
-		origen + glm::vec3(0.0f, 100.0f, 100.0f),// Posicion inicial
+		origenChicken + glm::vec3(325.0f, 50.0f, 325.0f),// Posicion inicial
 		glm::vec3(0.0f, 1.0f, 0.0f),			// Direccion de nuestro "arriba"
-		-60.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
+		-135.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
 		4.0f, 0.45f);					// Velocidad de movimiento | Velocidad de rotacion
 
 	while (!mainWindow.getShouldClose()) // Loop Principal 
@@ -368,14 +368,63 @@ int main()
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PiramideChicken);
 
-		// Chicken Little
-		pos = glm::vec3(-10.0f, 35.0f, 25.0f);
-		RenderModel(modelChicken, uniformModel, origen, pos, resources.Chicken_Little);
-
-		// Personajes secundarios
 		// Edificios
-		// Vehiculos
-		// Árboles
+		std::vector<glm::vec3> posEdificios = {
+			{-100.0f, 0.0f, 250.0f},	// Casa
+			{380.0f, 0.0f, -120.0f},	// Ayuntamiento
+			{360.0f, 0.0f, -120.0f},	// Estacion de bomberos
+			{350.0f, 0.0f, -120.0f},	// Torre de agua
+			{-20.0f, 0.0f, 400.0f},		// Edificio naranja
+			{-20.0f, 0.0f, 420.0f},		// Edificio Tienda
+			{-20.0f, 0.0f, 440.0f},		// Edificio Oaks
+		};
+		for (size_t i = 0; i < 7; i++) {
+			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.EdificiosLittle[i]);
+		}
+
+		// Chicken Little
+		pos = glm::vec3(290.0f, 0.0f, 290.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.ChickenLittle);
+
+		// Abby Patosa
+		pos = glm::vec3(280.0f, 0.0f, 280.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.AbbyPatosa);
+
+		// Runt
+		pos = glm::vec3(265.0f, 0.0f, 265.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Runt);
+
+		// PezOutWater
+		pos = glm::vec3(295.0f, 0.0f, 295.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PezOutWater);
+
+		// Kirby
+		pos = glm::vec3(300.0f, 0.0f, 300.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Kirby);
+
+		// Buck Gallo
+		pos = glm::vec3(275.0f, 0.0f, 275.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.BuckGallo);
+
+		// Melvin
+		pos = glm::vec3(305.0f, 0.0f, 305.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Melvin);
+
+		// Tina
+		pos = glm::vec3(310.0f, 0.0f, 310.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Tina);
+
+		// Ace
+		pos = glm::vec3(320.0f, 0.0f, 320.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Ace);
+
+		// Robot Alien
+		pos = glm::vec3(320.0f, 0.0f, 320.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.RobotAlien);
+
+		// The Dog
+		pos = glm::vec3(325.0f, 0.0f, 325.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.TheDog);
 	
 		// ------------------------------------------------------------------ Universo de Chilly Willy
 

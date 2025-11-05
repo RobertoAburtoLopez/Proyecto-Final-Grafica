@@ -36,12 +36,13 @@ public:
     std::vector<Animal> Zoologico;
 
     // Modelos Principales
-    Model Chicken_Little;
+    Model ChickenLittle;
     Model Chilly_Willy;
     Model Rikoche;
     Model Totoro, Totoro_mediano, Totoro_chiquito;
 
-    // Modelos de cada universo
-    
-    //...
+    // Universo Chiquito Chicken
+    Model ChickenCasa;
+    Model EdificiosLittle[7];
+    Model AbbyPatosa, Runt, PezOutWater, Kirby, BuckGallo, Melvin, Tina, Ace, RobotAlien, TheDog;
 };
