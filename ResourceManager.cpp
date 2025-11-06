@@ -53,5 +53,6 @@ ResourceManager::ResourceManager() {
 	Arbol_Hielo.LoadModel("Modelos/Chilly Willy/Arbol_Hielo/arbol_hielo.obj");
 	Iglu.LoadModel("Modelos/Chilly Willy/Iglu/Iglu.obj");
 	Anuncio.LoadModel("Modelos/Chilly Willy/Anuncio/anuncio.obj");
+	Animalitos.LoadModel("Modelos/Chilly Willy/Animalitos/animalitos.obj");
     //...
 }

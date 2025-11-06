@@ -394,7 +394,7 @@ int main()
 		// Árbol de hielo
 		pos = glm::vec3(5.0f, 250.0f, -50.0f);
 		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.Arbol_Hielo);
-		
+
 		// Árbol de hielo 2
 		pos = glm::vec3(120.0f, 250.0f, 50.0f);
 		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.Arbol_Hielo);
@@ -406,6 +406,16 @@ int main()
 		//Anuncio
 		pos = glm::vec3(200.0f, 185.0f, -270.0f);
 		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.Anuncio);
+
+		//Animalitos
+		pos = glm::vec3(-55.0f, 130.0f, -230.0f);
+		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.Animalitos);
+
+
+
+
+
+
 		// ------------------------------------------------------------------ Universo de Rikoche 
 		
 		// Piramide de Rikoche

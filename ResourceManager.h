@@ -46,6 +46,7 @@ public:
 	Model Arbol_Hielo;
     Model Iglu;
     Model Anuncio;
+    Model Animalitos;
     
 
     
