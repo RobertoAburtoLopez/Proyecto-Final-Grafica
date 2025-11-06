@@ -48,5 +48,10 @@ ResourceManager::ResourceManager() {
 
     // Modelos de cada universo
     
-    //...
+    //Estructuras 
+
+    Entrada_M.LoadModel("Modelos/Estructuras/pilares.obj");
+    EntradaPuertaDerecha_M.LoadModel("Modelos/Estructuras/puertaDerecha.obj");
+    EntradaPuertaIzquierda_M.LoadModel("Modelos/Estructuras/puertaIzquierda.obj");
+
 }

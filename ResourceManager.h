@@ -43,5 +43,8 @@ public:
 
     // Modelos de cada universo
     
-    //...
+    // Estructuras
+    Model Entrada_M;
+    Model EntradaPuertaDerecha_M;
+    Model EntradaPuertaIzquierda_M;
 };
