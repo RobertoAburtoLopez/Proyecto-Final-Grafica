@@ -7,7 +7,7 @@ ResourceManager::ResourceManager() {
     blueSky.push_back("Texturas/Skybox/blueSky/derecha.png");		// right (voltear verticalmente)
     blueSky.push_back("Texturas/Skybox/blueSky/izquierda.png");		// left
     blueSky.push_back("Texturas/Skybox/blueSky/abajo.png");			// bottom
-    blueSky.push_back("Texturas/Skybox/blueSky/arriba.png");		// up (girar 90° en sentido antihorario)
+    blueSky.push_back("Texturas/Skybox/blueSky/arriba.png");		// up (girar 90ï¿½ en sentido antihorario)
     blueSky.push_back("Texturas/Skybox/blueSky/atras.png");			// back
     blueSky.push_back("Texturas/Skybox/blueSky/enfrente.png");		// front
     skybox = Skybox(blueSky);
@@ -16,6 +16,7 @@ ResourceManager::ResourceManager() {
     plainTexture = Texture("Texturas/plain.png");   plainTexture.LoadTextureA();
     pastoTexture = Texture("Texturas/Pasto.png");   pastoTexture.LoadTextureA();
     croquisTexture = Texture("Texturas/Croquis.jpg");  croquisTexture.LoadTextureA();
+    LetreroTexture = Texture("Texturas/letrero.png");  LetreroTexture.LoadTextureA();
 
     // Modelos de las piramides
     ArenaCentral.LoadModel("Modelos/Prehispanico/Arena Central.obj");
@@ -24,7 +25,7 @@ ResourceManager::ResourceManager() {
     PiramideRikoche.LoadModel("Modelos/Piramides/Templo de Lucha.obj");
     PiramideTotoro.LoadModel("Modelos/Piramides/Templo de Kukulcan.obj");
 
-    // Modelos de los animales del Zoológico
+    // Modelos de los animales del Zoolï¿½gico
     Zoologico = 
     {
         {"Zorro",        "Modelos/Zoologico/Zorro.obj"},
@@ -48,10 +49,11 @@ ResourceManager::ResourceManager() {
 
     // Modelos de cada universo
     
-    //Estructuras 
+    //Estructuras
 
     Entrada_M.LoadModel("Modelos/Estructuras/pilares.obj");
     EntradaPuertaDerecha_M.LoadModel("Modelos/Estructuras/puertaDerecha.obj");
     EntradaPuertaIzquierda_M.LoadModel("Modelos/Estructuras/puertaIzquierda.obj");
+    Cartel_M.LoadModel("Modelos/Estructuras/cartel.obj");
 
 }

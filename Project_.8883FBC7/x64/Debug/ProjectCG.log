@@ -1,13 +1,12 @@
-﻿  ResourceManager.cpp
-  myMain.cpp
+﻿  myMain.cpp
 C:\Users\rodri\Desktop\Grafica\Window.h(13,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
   (compilando archivo de origen "myMain.cpp")
   
 C:\Users\rodri\Desktop\Grafica\Window.h(14,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
   (compilando archivo de origen "myMain.cpp")
   
-C:\Users\rodri\Desktop\Grafica\myMain.cpp(84,24): warning C4267: 'inicializando': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
-C:\Users\rodri\Desktop\Grafica\myMain.cpp(293,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\rodri\Desktop\Grafica\myMain.cpp(295,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-  Generando código...
+C:\Users\rodri\Desktop\Grafica\myMain.cpp(97,24): warning C4267: 'inicializando': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
+C:\Users\rodri\Desktop\Grafica\myMain.cpp(330,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\rodri\Desktop\Grafica\myMain.cpp(332,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\rodri\Desktop\Grafica\myMain.cpp(567,21): warning C4305: '+=': truncamiento de 'double' a 'float'
   ProjectCG.vcxproj -> C:\Users\rodri\Desktop\Grafica\x64\Debug\Project_ComputerGraphics.exe

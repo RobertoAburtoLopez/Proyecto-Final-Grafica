@@ -24,6 +24,7 @@ public:
     Texture plainTexture;
     Texture pastoTexture;
     Texture croquisTexture;
+    Texture LetreroTexture;
 
     // Modelos para las piramides
     Model ArenaCentral;
@@ -32,7 +33,7 @@ public:
     Model PiramideRikoche;
     Model PiramideTotoro;
 
-    // Lista de modelos para el Zoológico
+    // Lista de modelos para el Zoolï¿½gico
     std::vector<Animal> Zoologico;
 
     // Modelos Principales
@@ -47,4 +48,5 @@ public:
     Model Entrada_M;
     Model EntradaPuertaDerecha_M;
     Model EntradaPuertaIzquierda_M;
+    Model Cartel_M;
 };
