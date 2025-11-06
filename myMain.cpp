@@ -339,7 +339,7 @@ int main()
 
 		// Suelo
 		modelBase = glm::mat4(1.0);
-		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		pos = glm::vec3(0.0f, -0.05f, 0.0f);
 		scal = glm::vec3(100.0f, 1.0f, 100.0f);
 
 		RenderMeshWithTexture(meshList[0], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 
@@ -381,6 +381,19 @@ int main()
 		for (size_t i = 0; i < 7; i++) {
 			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.EdificiosLittle[i]);
 		}
+
+		// Calle Chicken
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.CalleChicken);
+
+		// Arboles
+		for (size_t i = 0; i < resources.Arboles.size(); i++) {
+			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.Arboles[i]);
+		}
+
+		// Cielo Hexagonal
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.CieloHexagonal);
 
 		// Chicken Little
 		pos = glm::vec3(290.0f, 0.0f, 290.0f);

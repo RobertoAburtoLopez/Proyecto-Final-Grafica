@@ -44,5 +44,8 @@ public:
     // Universo Chiquito Chicken
     Model ChickenCasa;
     Model EdificiosLittle[7];
+    Model CalleChicken;
+    Model CieloHexagonal;
+    std::vector<Model> Arboles;
     Model AbbyPatosa, Runt, PezOutWater, Kirby, BuckGallo, Melvin, Tina, Ace, RobotAlien, TheDog;
 };

@@ -57,6 +57,12 @@ ResourceManager::ResourceManager() {
     EdificiosLittle[5].LoadModel("Modelos/Chicken Little/Edificio Tienda.obj");
     EdificiosLittle[6].LoadModel("Modelos/Chicken Little/Edificio Oaks.obj");
 
+    CalleChicken.LoadModel("Modelos/Chicken Little/Calle Chicken.obj");
+    CieloHexagonal.LoadModel("Modelos/Chicken Little/Cielo Hexagonal.obj");
+
+    Arboles.push_back(Model("Modelos/Chicken Little/Arbol 1.obj"));
+    Arboles.push_back(Model("Modelos/Chicken Little/Arbol 2.obj"));
+
     AbbyPatosa.LoadModel(   "Modelos/Chicken Little/Abby Patosa.obj");
     Runt.LoadModel(         "Modelos/Chicken Little/Runt.obj");
     PezOutWater.LoadModel(  "Modelos/Chicken Little/PezOutWater.obj");
