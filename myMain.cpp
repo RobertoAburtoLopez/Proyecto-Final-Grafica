@@ -72,6 +72,7 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
 		glm::vec3 normal = glm::cross(v1, v2);
   		normal = glm::normalize(normal);
+		normal = glm::normalize(normal);
 
 		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
 		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
@@ -319,6 +320,18 @@ int main()
 		uniformColor = shaderList[0].getColorLocation();				// color
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();	// intensidad especular
 		uniformShininess = shaderList[0].GetShininessLocation();			// brillo
+		
+		// código...
+		
+		// Info en el Shader 
+		shaderList[0].UseShader();
+		uniformModel =				shaderList[0].GetModelLocation();				// modelo
+		uniformProjection =			shaderList[0].GetProjectionLocation();			// proyección
+		uniformView =				shaderList[0].GetViewLocation();				// vista
+		uniformEyePosition =		shaderList[0].GetEyePositionLocation();			// -
+		uniformColor =				shaderList[0].getColorLocation();				// color
+		uniformSpecularIntensity =	shaderList[0].GetSpecularIntensityLocation();	// intensidad especular
+		uniformShininess =			shaderList[0].GetShininessLocation();			// brillo
 
 		shaderList[0].SetDirectionalLight(&mainLight);								// iluminación direccional
 		shaderList[0].SetPointLights(PL_0, pointLightCount);						// iluminación pointlight
@@ -326,6 +339,8 @@ int main()
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniformMatrix4fv(uniformProjection,	1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(uniformView,			1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		// ------------------------------------------------------------------ Primitivas
@@ -335,6 +350,7 @@ int main()
 			Suelo		 [0]
 			Vegetacion   [1]
 
+				
 		*/
 
 		// Suelo
@@ -343,6 +359,7 @@ int main()
 		scal = glm::vec3(100.0f, 1.0f, 100.0f);
 
 		RenderMeshWithTexture(meshList[0], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess,
+		RenderMeshWithTexture(meshList[0], color, pos, scal, uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 
 			&Material_opaco, &resources.croquisTexture);
 
 		// ------------------------------------------------------------------ Zoológico
@@ -364,6 +381,7 @@ int main()
 
 		// ------------------------------------------------------------------ Universo de Chicken Little
 
+		
 		// Piramide de Chicken Little
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PiramideChicken);
@@ -381,6 +399,11 @@ int main()
 
 		// Piramide de Chilli Willy
 		pos = glm::vec3(50.0f, 105.0f, 50.0f);
+	
+		// ------------------------------------------------------------------ Universo de Chilly Willy
+
+		// Piramide de Chilli Willy
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.PiramideChilly);
 
 		// Chilly Willy
@@ -438,6 +461,7 @@ int main()
 
 		// Totoro mediano (Chū-Totoro)
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		pos = glm::vec3(10.0f, 35.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_mediano);
 
 		// Totoro chiquito (Chibi-Totoro)
