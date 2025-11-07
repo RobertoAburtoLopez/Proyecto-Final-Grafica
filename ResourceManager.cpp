@@ -55,5 +55,6 @@ ResourceManager::ResourceManager() {
     EntradaPuertaDerecha_M.LoadModel("Modelos/Estructuras/puertaDerecha.obj");
     EntradaPuertaIzquierda_M.LoadModel("Modelos/Estructuras/puertaIzquierda.obj");
     Cartel_M.LoadModel("Modelos/Estructuras/cartel.obj");
+    Guardianes_M.LoadModel("Modelos/Estructuras/guardianes.obj");
 
 }

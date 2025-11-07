@@ -358,14 +358,7 @@ int main()
 						rotacionPuertaDerecha = 90.0f;
 				}
 
-				if (deslizamientoPuertaIzq < 20.0f)
-				{
-					deslizamientoPuertaIzq += 0.5f * deltaTime;
-					if (deslizamientoPuertaIzq > 20.0f)
-						deslizamientoPuertaIzq = 20.0f;
-				}
-
-				if (rotacionPuertaDerecha >= 90.0f && deslizamientoPuertaIzq >= 20.0f)
+				if (rotacionPuertaDerecha >= 90.0f)
 				{
 					animandoPuertas = false;
 				}
@@ -379,14 +372,7 @@ int main()
 						rotacionPuertaDerecha = 0.0f;
 				}
 
-				if (deslizamientoPuertaIzq > 0.0f)
-				{
-					deslizamientoPuertaIzq -= 0.5f * deltaTime;
-					if (deslizamientoPuertaIzq < 0.0f)
-						deslizamientoPuertaIzq = 0.0f;
-				}
-
-				if (rotacionPuertaDerecha <= 0.0f && deslizamientoPuertaIzq <= 0.0f)
+				if (rotacionPuertaDerecha <= 0.0f)
 				{
 					animandoPuertas = false;
 				}
@@ -522,6 +508,12 @@ int main()
 		pos = glm::vec3(-7.0f, 35.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
 
+		// Guardianes
+		modelRikoche = glm::mat4(1);
+		pos = glm::vec3(0.0f, -17.0f, 0.0f);
+		modelRikoche = glm::rotate(modelRikoche, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		RenderModel(modelRikoche, uniformModel, origen, pos, resources.Guardianes_M);
+
 		// ------------------------------------------------------------------ Modelos con Blending (transparencia o traslucidez)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -532,32 +524,31 @@ int main()
 
 		//Instancia de pilares
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.6f, 900.0f));
-		model = glm::scale(model, glm::vec3(8.0f, 5.0f, 5.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -2.6f, 850.0f));
+		model = glm::scale(model, glm::vec3(8.0f, 3.0f, 5.0f));
 		modelaux = model; // Guardamos la transformación base CON escala
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.Entrada_M.RenderModel();
 
 		// Puerta Derecha - ROTACIÓN sobre su eje
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(-21.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
+		model = glm::translate(model, glm::vec3(-20.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
 		model = glm::rotate(model, rotacionPuertaDerecha * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.EntradaPuertaDerecha_M.RenderModel();
 
 		// Puerta Izquierda - DESLIZAMIENTO en Z
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(20.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
+		model = glm::translate(model, glm::vec3(19.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
 		model = glm::rotate(model, -rotacionPuertaDerecha * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.EntradaPuertaIzquierda_M.RenderModel();
 
 		// Cartel
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 41.0f, 0.0f)); // Ajustada por escala
+		model = glm::translate(model, glm::vec3(0.0f, 44.0f, 0.0f)); // Ajustada por escala
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.Cartel_M.RenderModel();
-
 
 
 		// ----------------------------- ANIMACION DE TEXTURA LETRERO ----------------------------------
@@ -573,10 +564,8 @@ int main()
 		toffset = glm::vec2(toffsetLetrero, toffsetLetrerov);
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(46.7f, 100.0f, 900.0f));
-		/*model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));*/
-		model = glm::scale(model, glm::vec3(200.0f, 200.0f, 200.0f));
+		model = glm::translate(model, glm::vec3(20.0f, 150.0f, 900.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 150.0f, 300.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		/*color = glm::vec3(1.0f, 0.0f, 0.0f);

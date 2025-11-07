@@ -33,6 +33,7 @@ public:
     Model PiramideRikoche;
     Model PiramideTotoro;
 
+
     // Lista de modelos para el Zool�gico
     std::vector<Animal> Zoologico;
 
@@ -49,4 +50,5 @@ public:
     Model EntradaPuertaDerecha_M;
     Model EntradaPuertaIzquierda_M;
     Model Cartel_M;
+    Model Guardianes_M;
 };
