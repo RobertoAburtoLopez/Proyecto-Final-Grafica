@@ -32,10 +32,13 @@ public:
     Model PiramideRikoche;
     Model PiramideTotoro;
 
-    // Lista de modelos para el Zoológico
+    // Decoracion Arena Central
+    std::vector<Model> DecoracionCentral;
+
+    // Animales del Zoológico
     std::vector<Animal> Zoologico;
 
-    // Modelos Principales
+    // Personajes Principales
     Model ChickenLittle;
     Model Chilly_Willy;
     Model Rikoche;
@@ -43,9 +46,11 @@ public:
 
     // Universo Chiquito Chicken
     Model ChickenCasa;
-    Model EdificiosLittle[7];
+    std::vector<Model> EdificiosLittle;
     Model CalleChicken;
     Model CieloHexagonal;
+    Model Hexagono;
+    Model MariposaAzul, MariposaAzul_AlaDerecha, MariposaAzul_AlaIzquierda;
     std::vector<Model> Arboles;
     Model AbbyPatosa, Runt, PezOutWater, Kirby, BuckGallo, Melvin, Tina, Ace, RobotAlien, TheDog;
 };

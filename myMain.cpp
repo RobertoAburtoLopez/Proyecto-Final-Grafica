@@ -24,6 +24,10 @@
 #include "SpotLight.h"				// .
 #include "Material.h"				// .
 #include "ResourceManager.h"		// Recursos
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <chrono>
 //#include<assimp/Importer.hpp>		// Para probar el importer
 
 // ------------------------------------------------------------------ Ventana
@@ -228,9 +232,317 @@ void RenderMeshWithTexture(Mesh* mesh, glm::vec3 color, glm::vec3 position, glm:
 	mesh->RenderMesh();
 }
 
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////KEYFRAMES/////////////////////
+
+//variables para keyframes
+float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0,
+ciclo3, ciclo4, ciclo5, ciclo6;
+bool animacion = false;
+
+//NEW// Keyframes
+float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
+float movAvion_x = 0.0f, movAvion_y = 0.0f;
+float giroAvion = 0;
+
+#define MAX_FRAMES 100 //Número de cuadros máximos
+int i_max_steps = 100; //Número de pasos entre cuadros para interpolación, a mayor número , más lento será el movimiento
+int i_curr_steps = 0;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	float movAvion_x;		//Variable para PosicionX
+	float movAvion_y;		//Variable para PosicionY
+	float movAvion_xInc;		//Variable para IncrementoX
+	float movAvion_yInc;		//Variable para IncrementoY
+	float giroAvion;		//Variable para GiroAvion
+	float giroAvionInc;		//Variable para IncrementoGiroAvion
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 6;			//El número de cuadros guardados actualmente desde 0 para no sobreescribir
+bool play = false;
+int playIndex = 0;
+
+
+void saveFrame(void) //tecla L
+{
+	printf("frameindex %d\n", FrameIndex);
+
+	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
+	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
+	KeyFrame[FrameIndex].giroAvion = giroAvion;
+	//Se agregan nuevas líneas para guardar más variables si es necesario
+
+	//no volatil,se requiere agregar una forma de escribir a un archivo para guardar los frames
+	std::ofstream file("keyframes.txt", std::ios::app);
+
+	if (file.is_open()) {
+		file << "Frame " << FrameIndex << ":\n";
+		file << movAvion_x << " "
+			<< movAvion_y << " "
+			<< giroAvion << "\n";
+	}
+	else
+	{
+		printf("Error: no se pudo abrir keyframes.txt para escribir.\n");
+	}
+	FrameIndex++;
+}
+
+void loadFrames()
+{
+	std::ifstream file("keyframes.txt");
+
+	if (!file.is_open())
+	{
+		printf("No se encontró keyframes.txt\n");
+		return;
+	}
+
+	std::string line;
+	int frameCount = 0;
+
+	while (std::getline(file, line))
+	{
+		if (line.find("Frame") != std::string::npos) continue;
+
+		std::istringstream iss(line);
+		float x, y, giro;
+
+		if (iss >> x >> y >> giro)
+		{
+			int index = FrameIndex + frameCount;
+			KeyFrame[index].movAvion_x = x;
+			KeyFrame[index].movAvion_y = y;
+			KeyFrame[index].giroAvion = giro;
+			frameCount++;
+		}
+	}
+	file.close();
+	FrameIndex += frameCount;
+	printf("Se cargaron %d frames desde keyframes.txt\n", frameCount);
+}
+
+void resetElements(void) //Tecla 0
+{
+
+	movAvion_x = KeyFrame[0].movAvion_x;
+	movAvion_y = KeyFrame[0].movAvion_y;
+	giroAvion = KeyFrame[0].giroAvion;
+}
+
+void interpolation(void)
+{
+	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
+	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
+	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
+
+}
+
+void animate(void)
+{
+	//Movimiento del objeto con barra espaciadora
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
+		{
+			playIndex++;
+			printf("playindex : %d\n", playIndex);
+			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+			{
+				printf("Frame index= %d\n", FrameIndex);
+				printf("termino la animacion\n");
+				playIndex = 0;
+				play = false;
+			}
+			else //Interpolación del próximo cuadro
+			{
+
+				i_curr_steps = 0; //Resetea contador
+				//Interpolar
+				interpolation();
+			}
+		}
+		else
+		{
+			//Dibujar Animación
+			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
+			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
+			giroAvion += KeyFrame[playIndex].giroAvionInc;
+			i_curr_steps++;
+		}
+	}
+}
+
+void instrucciones()
+{
+	printf("\nTeclas para uso de Keyframes:\n"
+		"1.-Presionar barra espaciadora para reproducir animacion.\n"
+		"2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
+	printf("3.-Presiona L para guardar frame\n"
+		"4.-Presiona P para habilitar guardar nuevo frame\n"
+		"5.-Presiona 1 para mover en x\n"
+		"6.-Presiona 2 para habilitar mover en x\n"
+		"7.-Presiona 3 para mover en y\n"
+		"8.-Presiona 4 para habilitar mover en y\n"
+		"9.-Presiona 5 para rotar 180°\n"
+		"10.-Presiona 6 para habilitar rotar 180°\n"
+		"11.-Presiona SHIFT + 'cualquier tecla para mover' para ir en sentido contrario\n");
+}
+///////////////* FIN KEYFRAMES*////////////////////////////
+
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				habilitaranimacion = 0;
+
+			}
+			else
+			{
+				play = false;
+
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (habilitaranimacion < 1 && reproduciranimacion>0)
+		{
+			printf("Ya puedes reproducir de nuevo la animación con la tecla de barra espaciadora'\n");
+			reproduciranimacion = 0;
+
+		}
+	}
+
+	if (keys[GLFW_KEY_L])
+	{
+		if (guardoFrame < 1)
+		{
+			saveFrame();
+			printf("movAvion_x es: %f\n", movAvion_x);
+			printf("movAvion_y es: %f\n", movAvion_y);
+			printf("giroAvion es: %f\n", giroAvion);
+			printf("presiona P para habilitar guardar otro frame'\n");
+			guardoFrame++;
+			reinicioFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		if (reinicioFrame < 1)
+		{
+			guardoFrame = 0;
+			printf("Ya puedes guardar otro frame presionando la tecla L'\n");
+		}
+	}
+
+	bool decremento = keys[GLFW_KEY_LEFT_SHIFT] || keys[GLFW_KEY_RIGHT_SHIFT];
+	float incremento = 1.0f * (decremento ? -1.0f : 1.0f);
+
+	if (keys[GLFW_KEY_1])
+	{
+		if (ciclo < 1)
+		{
+			//printf("movAvion_x es: %f\n", movAvion_x);
+			movAvion_x += incremento;
+			printf("\n movAvion_x es: %f\n", movAvion_x);
+			ciclo++;
+			ciclo2 = 0;
+			printf("\n Presiona la tecla 2 para poder habilitar la variable\n");
+		}
+
+	}
+	if (keys[GLFW_KEY_2])
+	{
+		if (ciclo2 < 1)
+		{
+			ciclo = 0;
+			ciclo2++;
+			printf("\n Ya puedes modificar tu variable presionando la tecla 1\n");
+		}
+	}
+	if (keys[GLFW_KEY_3])
+	{
+		if (ciclo3 < 1)
+		{
+			movAvion_y += incremento;
+			printf("\n movAvion_y es: %f\n", movAvion_y);
+			ciclo3++;
+			ciclo4 = 0;
+			printf("\n Presiona la tecla 4 para habilitar nuevamente la variable Y\n");
+		}
+	}
+
+	if (keys[GLFW_KEY_4])
+	{
+		if (ciclo4 < 1)
+		{
+			ciclo3 = 0;
+			ciclo4++;
+			printf("\n Ya puedes modificar tu variable Y presionando la tecla 3\n");
+		}
+	}
+	if (keys[GLFW_KEY_5])
+	{
+		if (ciclo5 < 1)
+		{
+			giroAvion += 180.0f; // cambia el valor según tu escala de rotación
+			printf("\n giroAvion es: %f\n", giroAvion);
+			ciclo5++;
+			ciclo6 = 0;
+			printf("\n Presiona la tecla 6 para habilitar nuevamente la rotación\n");
+		}
+	}
+	if (keys[GLFW_KEY_6])
+	{
+		if (ciclo6 < 1)
+		{
+			ciclo5 = 0;
+			ciclo6++;
+			printf("\n Ya puedes modificar la rotación presionando la tecla 5\n");
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // -------------------------------------------------------------------------- Main
 int main()
 {
+	auto start = std::chrono::high_resolution_clock::now(); // Inicio del cronómetro
+
 	// Iniciamos el contexto
 	mainWindow = Window(1366, 768); // Resolución: 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
@@ -245,6 +557,10 @@ int main()
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
+	auto end = std::chrono::high_resolution_clock::now(); // Fin del cronómetro
+	std::chrono::duration<double> loadTime = end - start;
+	std::cout << "Tiempo total de carga: " << loadTime.count() << " segundos\n";
+
 	// Variables uniform
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0, 
 			uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
@@ -257,6 +573,7 @@ int main()
 	
 	// Matrices para los modelos
 	glm::mat4 modelBase(1.0);
+	glm::mat4 modelaux(1.0);
 	glm::mat4 modelZoo(1.0);		// Matriz para los animales
 	glm::mat4 modelChicken(1.0);	// Matriz para los modelos de Chicken Little
 	glm::mat4 modelTotoro(1.0);		// Matriz para los modelos de Totoro
@@ -283,10 +600,47 @@ int main()
 	
 	// Ajustes para la cámara
 	camera = Camera(
-		origenChicken + glm::vec3(325.0f, 50.0f, 325.0f),// Posicion inicial
+		//origenChicken + glm::vec3(325.0f, 50.0f, 325.0f),// Posicion inicial
+		origen + glm::vec3(0.0f, 30.0f, 50.0f),// Posicion inicial
 		glm::vec3(0.0f, 1.0f, 0.0f),			// Direccion de nuestro "arriba"
-		-135.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
+		//-135.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
+		-90.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
 		4.0f, 0.45f);					// Velocidad de movimiento | Velocidad de rotacion
+
+	// KEYFRAMES ---------------------------------------------------------------------------
+	KeyFrame[0].movAvion_x = 0.0f;
+	KeyFrame[0].movAvion_y = 0.0f;
+	KeyFrame[0].giroAvion = 0;
+
+	KeyFrame[1].movAvion_x = -15.0f;
+	KeyFrame[1].movAvion_y = 50.0f;
+	KeyFrame[1].giroAvion = 0;
+
+	KeyFrame[2].movAvion_x = -45.0f;
+	KeyFrame[2].movAvion_y = 40.0f;
+	KeyFrame[2].giroAvion = 0;
+
+	KeyFrame[3].movAvion_x = -30.0f;
+	KeyFrame[3].movAvion_y = -5.0f;
+	KeyFrame[3].giroAvion = 180;
+
+	KeyFrame[4].movAvion_x = 20.0f;
+	KeyFrame[4].movAvion_y = 25.0f;
+	KeyFrame[4].giroAvion = 180.0f;
+
+	KeyFrame[5].movAvion_x = 50.0f;
+	KeyFrame[5].movAvion_y = 45.0f;
+	KeyFrame[5].giroAvion = 180.0f;
+
+	instrucciones();
+	loadFrames();
+
+	float speedAleteo = 15.0f;
+	float angulo = 0.0f;
+	float tiempo = 0.0f;
+	float deltaTiempo = 0.015f;
+
+	glm::vec3 posMariposaAlas = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	while (!mainWindow.getShouldClose()) // Loop Principal 
 	{
@@ -310,6 +664,11 @@ int main()
 		
 		// código...
 		
+		// KEYFRAMES -------------------------------------------------------------
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
+
+
 		// Info en el Shader 
 		shaderList[0].UseShader();
 		uniformModel =				shaderList[0].GetModelLocation();				// modelo
@@ -355,16 +714,19 @@ int main()
 			{0.0f, 0.0f, 80.0f},		// Orangutan
 			{-10.0f, 0.0f, 80.0f}		// Pedro
 		};
+		modelZoo = glm::mat4(1.0);
 		for (size_t i = 0; i < resources.Zoologico.size(); i++)
 			RenderModel(modelZoo, uniformModel, origen, posAnimals[i], resources.Zoologico[i].modelo);
 
 		// ------------------------------------------------------------------ Arena Central
+		modelBase = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
 
 		// ------------------------------------------------------------------ Universo de Chicken Little
 		
 		// Piramide de Chicken Little
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PiramideChicken);
 
@@ -378,64 +740,98 @@ int main()
 			{-20.0f, 0.0f, 420.0f},		// Edificio Tienda
 			{-20.0f, 0.0f, 440.0f},		// Edificio Oaks
 		};
-		for (size_t i = 0; i < 7; i++) {
+		modelChicken = glm::mat4(1.0);
+		for (size_t i = 0; i < resources.EdificiosLittle.size(); i++) {
 			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.EdificiosLittle[i]);
 		}
 
 		// Calle Chicken
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.CalleChicken);
 
 		// Arboles
+		modelChicken = glm::mat4(1.0);
 		for (size_t i = 0; i < resources.Arboles.size(); i++) {
 			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.Arboles[i]);
 		}
 
+		// Mariposa Azul
+		modelChicken = glm::mat4(1.0);
+		pos = glm::vec3(0.0f, 35.0f + movAvion_y, 0.0f + movAvion_x);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.MariposaAzul);
+		//modelaux = modelChicken;
+
+		//tiempo += deltaTiempo;
+		//angulo = 35.0f * sin(speedAleteo * tiempo);
+
+		//posMariposaAlas = pos + glm::vec3(-1.0f, 0.0f, 0.0f);
+		//modelChicken = modelaux;
+		//modelChicken = glm::rotate(modelChicken, glm::radians(angulo), glm::vec3(0, 1, 0));
+		//RenderModel(modelChicken, uniformModel, origen, posMariposaAlas, resources.MariposaAzul_AlaDerecha);
+
+		//posMariposaAlas = pos + glm::vec3(1.0f, 0.0f, 0.0f);
+		//modelChicken = modelaux;
+		//modelChicken = glm::rotate(modelChicken, glm::radians(-angulo), glm::vec3(0, 1, 0));
+		//RenderModel(modelChicken, uniformModel, origen, posMariposaAlas, resources.MariposaAzul_AlaIzquierda);
+
 		// Cielo Hexagonal
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.CieloHexagonal);
 
 		// Chicken Little
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(290.0f, 0.0f, 290.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.ChickenLittle);
 
 		// Abby Patosa
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(280.0f, 0.0f, 280.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.AbbyPatosa);
 
 		// Runt
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(265.0f, 0.0f, 265.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Runt);
 
 		// PezOutWater
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(295.0f, 0.0f, 295.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PezOutWater);
 
 		// Kirby
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(300.0f, 0.0f, 300.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Kirby);
 
 		// Buck Gallo
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(275.0f, 0.0f, 275.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.BuckGallo);
 
 		// Melvin
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(305.0f, 0.0f, 305.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Melvin);
 
 		// Tina
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(310.0f, 0.0f, 310.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Tina);
 
 		// Ace
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(320.0f, 0.0f, 320.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Ace);
 
 		// Robot Alien
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(320.0f, 0.0f, 320.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.RobotAlien);
 
 		// The Dog
+		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(325.0f, 0.0f, 325.0f);
 		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.TheDog);
 	
@@ -446,7 +842,7 @@ int main()
 		RenderModel(modelChilly, uniformModel, origenChilly, pos, resources.PiramideChilly);
 
 		// Chilly Willy
-		pos = glm::vec3(10.0f, 35.0f, 25.0f);
+		pos = glm::vec3(10.0f, 15.0f, 25.0f);
 		RenderModel(modelChilly, uniformModel, origen, pos, resources.Chilly_Willy);
 
 		// ------------------------------------------------------------------ Universo de Rikoche 
@@ -456,7 +852,7 @@ int main()
 		RenderModel(modelRikoche, uniformModel, origenRikoche, pos, resources.PiramideRikoche);
 
 		// Rikoche
-		pos = glm::vec3(0.0f, 35.0f, 35.0f);
+		pos = glm::vec3(0.0f, 15.0f, 35.0f);
 		RenderModel(modelRikoche, uniformModel, origen, pos, resources.Rikoche);
 
 		// ------------------------------------------------------------------ Universo de Totoro 
@@ -466,15 +862,15 @@ int main()
 		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.PiramideTotoro);
 
 		// Totoro (Ō-Totoro)
-		pos = glm::vec3(0.0f, 30.0f, 20.0f);
+		pos = glm::vec3(0.0f, 10.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro);
 
 		// Totoro mediano (Chū-Totoro)
-		pos = glm::vec3(10.0f, 35.0f, 20.0f);
+		pos = glm::vec3(10.0f, 15.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_mediano);
 
 		// Totoro chiquito (Chibi-Totoro)
-		pos = glm::vec3(-7.0f, 35.0f, 20.0f);
+		pos = glm::vec3(-7.0f, 15.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
 
 		// ------------------------------------------------------------------ Modelos con Blending (transparencia o traslucidez)

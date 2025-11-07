@@ -13,15 +13,32 @@ ResourceManager::ResourceManager() {
     skybox = Skybox(blueSky);
 
     // Texturas
-    plainTexture = Texture("Texturas/plain.png");   plainTexture.LoadTextureA();
-    pastoTexture = Texture("Texturas/Pasto.png");   pastoTexture.LoadTextureA();
-    croquisTexture = Texture("Texturas/Croquis.jpg");  croquisTexture.LoadTextureA();
+    plainTexture = Texture("Texturas/plain.png");       plainTexture.LoadTextureA();
+    pastoTexture = Texture("Texturas/Pasto.png");       pastoTexture.LoadTextureA();
+    croquisTexture = Texture("Texturas/Croquis.jpg");   croquisTexture.LoadTextureA();
 
     // Modelos de las piramides
-    //ArenaCentral.LoadModel("Modelos/Prehispanico/Arena Central.obj");
+    //ArenaCentral.LoadModel("Modelos/Decoracion Prehispanica/Arena Central.obj");
     /*PiramideChilly.LoadModel("Modelos/Piramides/Piramide de Quetzalcoatl.obj");
     PiramideRikoche.LoadModel("Modelos/Piramides/Templo de Lucha.obj");
     PiramideTotoro.LoadModel("Modelos/Piramides/Templo de Kukulcan.obj");*/
+
+    // Decoracion Arena Central
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto de Mascaras.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Carrito de Paja.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Carrito de Sandias.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Costales.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Mesas.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Piedras.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 1.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 2.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 3.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 4.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 5.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto 6.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto de Cuchillos.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Puesto de Fruta.obj"));
+    DecoracionCentral.push_back(Model("Modelos/Decoracion Lucha Libre/Sombrilla.obj"));
 
     // Modelos de los animales del Zoológico
     /*Zoologico = 
@@ -38,39 +55,44 @@ ResourceManager::ResourceManager() {
         animal.modelo.LoadModel(animal.ruta);*/
 
     // Personajes principales
-    ChickenLittle.LoadModel("Modelos/Chicken Little/Chicken Little.obj");
+    ChickenLittle.LoadModel("Modelos/Universo Chicken Little/Chicken Little.obj");
 
-    /*Chilly_Willy.LoadModel("Modelos/Chilly Willy/Chilly Willy.obj");
-    Rikoche.LoadModel("Modelos/Rikoche/Rikoche.obj");
-    Totoro.LoadModel("Modelos/Totoro/Totoro.obj");
-    Totoro_mediano.LoadModel("Modelos/Totoro/Totoro_mediano.obj");
-    Totoro_chiquito.LoadModel("Modelos/Totoro/Totoro_chiquito.obj");*/
+    /*Chilly_Willy.LoadModel("Modelos/Universo Chilly Willy/Chilly Willy.obj");
+    Rikoche.LoadModel("Modelos/Universo Rikoche/Rikoche.obj");
+    Totoro.LoadModel("Modelos/Universo Totoro/Totoro.obj");
+    Totoro_mediano.LoadModel("Modelos/Universo Totoro/Totoro_mediano.obj");
+    Totoro_chiquito.LoadModel("Modelos/Universo Totoro/Totoro_chiquito.obj");*/
 
     // Universo Chiquito Chicken
-    PiramideChicken.LoadModel("Modelos/Piramides/Piramide de Chicken.obj");
+    //PiramideChicken.LoadModel("Modelos/Piramides/Piramide de Chicken.obj");
 
-    EdificiosLittle[0].LoadModel("Modelos/Chicken Little/Chicken Casa.obj");
-    EdificiosLittle[1].LoadModel("Modelos/Chicken Little/Ayuntamiento.obj");
-    EdificiosLittle[2].LoadModel("Modelos/Chicken Little/Estacion de Bomberos.obj");
-    EdificiosLittle[3].LoadModel("Modelos/Chicken Little/Torre de Agua.obj");
-    EdificiosLittle[4].LoadModel("Modelos/Chicken Little/Edificio Naranja.obj");
-    EdificiosLittle[5].LoadModel("Modelos/Chicken Little/Edificio Tienda.obj");
-    EdificiosLittle[6].LoadModel("Modelos/Chicken Little/Edificio Oaks.obj");
+    /*EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Chicken Casa.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Ayuntamiento.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Estacion de Bomberos.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Torre de Agua.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Edificio Naranja.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Edificio Tienda.obj"));
+    EdificiosLittle.push_back(Model("Modelos/Universo Chicken Little/Edificio Oaks.obj"));*/
 
-    CalleChicken.LoadModel("Modelos/Chicken Little/Calle Chicken.obj");
-    CieloHexagonal.LoadModel("Modelos/Chicken Little/Cielo Hexagonal.obj");
+    /*CalleChicken.LoadModel(     "Modelos/Universo Chicken Little/Calle Chicken.obj");
+    CieloHexagonal.LoadModel(   "Modelos/Universo Chicken Little/Cielo Hexagonal.obj");
+    Hexagono.LoadModel(         "Modelos/Universo Chicken Little/Hexagono.obj");*/
 
-    Arboles.push_back(Model("Modelos/Chicken Little/Arbol 1.obj"));
-    Arboles.push_back(Model("Modelos/Chicken Little/Arbol 2.obj"));
+    Arboles.push_back(Model("Modelos/Universo Chicken Little/Arbol 1.obj"));
+    Arboles.push_back(Model("Modelos/Universo Chicken Little/Arbol 2.obj"));
 
-    AbbyPatosa.LoadModel(   "Modelos/Chicken Little/Abby Patosa.obj");
-    Runt.LoadModel(         "Modelos/Chicken Little/Runt.obj");
-    PezOutWater.LoadModel(  "Modelos/Chicken Little/PezOutWater.obj");
-    Kirby.LoadModel(        "Modelos/Chicken Little/Kirby.obj");
-    BuckGallo.LoadModel(    "Modelos/Chicken Little/Buck Gallo.obj");
-    Melvin.LoadModel(       "Modelos/Chicken Little/Melvin.obj");
-    Tina.LoadModel(         "Modelos/Chicken Little/Tina.obj");
-    Ace.LoadModel(          "Modelos/Chicken Little/Ace.obj");
-    RobotAlien.LoadModel(   "Modelos/Chicken Little/Robot Alien.obj");
-    TheDog.LoadModel(       "Modelos/Chicken Little/The Dog.obj");
+    /*MariposaAzul.LoadModel("Modelos/Universo Chicken Little/Mariposa Azul - completa.obj");
+    MariposaAzul_AlaDerecha.LoadModel("Modelos/Universo Chicken Little/Mariposa Azul - Ala Derecha.obj");
+    MariposaAzul_AlaIzquierda.LoadModel("Modelos/Universo Chicken Little/Mariposa Azul - Ala Izquierda.obj");*/
+
+    /*AbbyPatosa.LoadModel(   "Modelos/Universo Chicken Little/Abby Patosa.obj");
+    Runt.LoadModel(         "Modelos/Universo Chicken Little/Runt.obj");
+    PezOutWater.LoadModel(  "Modelos/Universo Chicken Little/PezOutWater.obj");
+    Kirby.LoadModel(        "Modelos/Universo Chicken Little/Kirby.obj");
+    BuckGallo.LoadModel(    "Modelos/Universo Chicken Little/Buck Gallo.obj");
+    Melvin.LoadModel(       "Modelos/Universo Chicken Little/Melvin.obj");
+    Tina.LoadModel(         "Modelos/Universo Chicken Little/Tina.obj");
+    Ace.LoadModel(          "Modelos/Universo Chicken Little/Ace.obj");
+    RobotAlien.LoadModel(   "Modelos/Universo Chicken Little/Robot Alien.obj");
+    TheDog.LoadModel(       "Modelos/Universo Chicken Little/The Dog.obj");*/
 }
