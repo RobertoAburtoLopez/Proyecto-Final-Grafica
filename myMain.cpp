@@ -57,6 +57,19 @@ SpotLight PL_1[MAX_SPOT_LIGHTS];			//.
 SpotLight SP_RGB[MAX_SPOT_LIGHTS];			// Arreglos de luces SpotLight
 SpotLight SP_lamparas[MAX_SPOT_LIGHTS];		//.
 
+
+// ---------------------------------------------------------------- variables para animación
+// letrero 
+float toffsetLetrero = 0.0f;
+float toffsetLetrerov = 0.0f;
+
+
+// PUERTAS 
+float rotacionPuertaDerecha = 0.0f;      // Rotación de puerta derecha (0 a 90 grados)
+float deslizamientoPuertaIzq = 0.0f;     // Deslizamiento puerta izquierda (0 a 20 unidades)
+bool puertasAbiertas = false;             // Estado de las puertas
+bool animandoPuertas = false;             // Bandera para controlar animación
+
 // ------------------------------------------------------------------ Funciones
 
 // Función - Cálculo de Normales por promedio de vértices 
@@ -134,6 +147,23 @@ void CreatePrimitives()
 	meshList.push_back(Vegetacion);
 
 	calcAverageNormals(indices_Vegetacion, 12, vertices_Vegetacion, 64, 8, 5);
+
+	// --------------------------------------------------------- Plano para letrero (cuadrado simple)
+	GLfloat vertices_Letrero[] = {
+		//	x      y      z			u	  v			nx	  ny    nz
+			-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+			0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 1.0f
+	};
+	unsigned int indices_Letrero[] = {
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	Mesh* Letrero = new Mesh();
+	Letrero->CreateMesh(vertices_Letrero, indices_Letrero, 32, 6);
+	meshList.push_back(Letrero);
 }
 
 // Función - Creamos los shaders
@@ -229,6 +259,8 @@ void RenderMeshWithTexture(Mesh* mesh, glm::vec3 color, glm::vec3 position, glm:
 	mesh->RenderMesh();
 }
 
+
+
 // -------------------------------------------------------------------------- Main
 int main()
 {
@@ -247,6 +279,8 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 	// Variables uniform
+	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
+			uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0, 
 			uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
 
@@ -281,6 +315,11 @@ int main()
 	glm::vec3 pos = glm::vec3(1.0f);		// Para mover los modelos
 	glm::vec3 scal = glm::vec3(1.0f);		// Para escalar los modelos
 	float rot = 0.0f;						// Para rotar los modelos
+
+	// Variables auxiliares para animaciones
+	glm::mat4 model(1.0);
+	glm::mat4 modelaux(1.0);
+	glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 	
 	// Ajustes para la cámara
 	camera = Camera(
@@ -295,6 +334,56 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
+
+
+		// ------------------------------- ANIMACION DE PUERTA ----------------------------------------------
+
+		  // DETECCIÓN DE TECLA 'O' PARA ABRIR/CERRAR PUERTAS
+		if (mainWindow.getsKeys()[GLFW_KEY_O])
+		{
+			if (!animandoPuertas)
+			{
+				puertasAbiertas = !puertasAbiertas;
+				animandoPuertas = true;
+				mainWindow.getsKeys()[GLFW_KEY_O] = false;
+			}
+		}
+
+		// ------------------------------- ANIMACION DE PUERTAS ----------------------------------------------
+		if (animandoPuertas)
+		{
+			if (puertasAbiertas)  // Abrir puertas
+			{
+				if (rotacionPuertaDerecha < 90.0f)
+				{
+					rotacionPuertaDerecha += 2.0f * deltaTime;
+					if (rotacionPuertaDerecha > 90.0f)
+						rotacionPuertaDerecha = 90.0f;
+				}
+
+				if (rotacionPuertaDerecha >= 90.0f)
+				{
+					animandoPuertas = false;
+				}
+			}
+			else  // Cerrar puertas
+			{
+				if (rotacionPuertaDerecha > 0.0f)
+				{
+					rotacionPuertaDerecha -= 2.0f * deltaTime;
+					if (rotacionPuertaDerecha < 0.0f)
+						rotacionPuertaDerecha = 0.0f;
+				}
+
+				if (rotacionPuertaDerecha <= 0.0f)
+				{
+					animandoPuertas = false;
+				}
+			}
+		}
+
+
+
 
 		// Recibir eventos del usuario 
 		glfwPollEvents();
@@ -332,6 +421,7 @@ int main()
 		uniformColor =				shaderList[0].getColorLocation();				// color
 		uniformSpecularIntensity =	shaderList[0].GetSpecularIntensityLocation();	// intensidad especular
 		uniformShininess =			shaderList[0].GetShininessLocation();			// brillo
+		uniformTextureOffset =		shaderList[0].GetTextureOffsetLocation();		// offset de textura
 
 		shaderList[0].SetDirectionalLight(&mainLight);								// iluminación direccional
 		shaderList[0].SetPointLights(PL_0, pointLightCount);						// iluminación pointlight
@@ -343,12 +433,17 @@ int main()
 		glUniformMatrix4fv(uniformView,			1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
+		// Inicializar textureOffset con valor por defecto (0, 0) para modelos sin animación de textura
+		toffset = glm::vec2(0.0f, 0.0f);
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+
 		// ------------------------------------------------------------------ Primitivas
 
 		/*
 				Mesh	indice
 			Suelo		 [0]
 			Vegetacion   [1]
+			Letrero      [2]
 
 				
 		*/
@@ -375,6 +470,11 @@ int main()
 		for (size_t i = 0; i < resources.Zoologico.size(); i++)
 			RenderModel(modelZoo, uniformModel, origen, posAnimals[i], resources.Zoologico[i].modelo);
 
+		/* ------------------------------------------------------------------ Arena Central*/
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
+
+		/* ------------------------------------------------------------------ Universo de Chicken Little*/
 		// ------------------------------------------------------------------ Arena Central
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
@@ -390,6 +490,12 @@ int main()
 		pos = glm::vec3(-10.0f, 35.0f, 25.0f);
 		RenderModel(modelChicken, uniformModel, origen, pos, resources.Chicken_Little);
 
+		/* Personajes secundarios
+		 Edificios
+		 Vehiculos
+		 Árboles*/
+	
+		/* ------------------------------------------------------------------ Universo de Chilly Willy*/
 		// Personajes secundarios
 		// Edificios
 		// Vehiculos
@@ -468,10 +574,74 @@ int main()
 		pos = glm::vec3(-7.0f, 35.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
 
+		// Guardianes
+		modelRikoche = glm::mat4(1);
+		pos = glm::vec3(0.0f, -17.0f, 0.0f);
+		modelRikoche = glm::rotate(modelRikoche, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		RenderModel(modelRikoche, uniformModel, origen, pos, resources.Guardianes_M);
+
 		// ------------------------------------------------------------------ Modelos con Blending (transparencia o traslucidez)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
+
+		// -------------------------------- ENTRADA -------------------------------------
+		
+
+
+		//Instancia de pilares
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, -2.6f, 850.0f));
+		model = glm::scale(model, glm::vec3(8.0f, 3.0f, 5.0f));
+		modelaux = model; // Guardamos la transformación base CON escala
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		resources.Entrada_M.RenderModel();
+
+		// Puerta Derecha - ROTACIÓN sobre su eje
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-20.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
+		model = glm::rotate(model, rotacionPuertaDerecha * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		resources.EntradaPuertaDerecha_M.RenderModel();
+
+		// Puerta Izquierda - DESLIZAMIENTO en Z
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(19.0f, 15.0f, 0.0f)); // Traslación relativa (ajustada por escala)
+		model = glm::rotate(model, -rotacionPuertaDerecha * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		resources.EntradaPuertaIzquierda_M.RenderModel();
+
+		// Cartel
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 52.0f, 0.0f)); // Ajustada por escala
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		resources.Cartel_M.RenderModel();
+
+
+		// ----------------------------- ANIMACION DE TEXTURA LETRERO ----------------------------------
+
+		//textura con movimiento
+		//Importantes porque la variable uniform no podemos modificarla directamente
+		toffsetLetrero += 0.001;
+		toffsetLetrerov = 0.000;
+		//para que no se desborde la variable
+		if (toffsetLetrero > 1.0)
+			toffsetLetrero = 0.0;
+
+		toffset = glm::vec2(toffsetLetrero, toffsetLetrerov);
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 150.0f, 870.0f));
+		model = glm::scale(model, glm::vec3(400.0f, 190.0f, 300.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		/*color = glm::vec3(1.0f, 0.0f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
+		resources.LetreroTexture.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[2]->RenderMesh();
+
 		// Instanciar modelos aqui...
 
 		glDisable(GL_BLEND);

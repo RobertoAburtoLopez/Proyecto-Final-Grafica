@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+C:\Users\rodri\Desktop\Grafica\Camera.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Camera.obj
+C:\Users\rodri\Desktop\Grafica\DirectionalLight.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\DirectionalLight.obj
+C:\Users\rodri\Desktop\Grafica\Light.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Light.obj
+C:\Users\rodri\Desktop\Grafica\Material.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Material.obj
+C:\Users\rodri\Desktop\Grafica\Mesh_tn.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Mesh_tn.obj
+C:\Users\rodri\Desktop\Grafica\Model.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Model.obj
+C:\Users\rodri\Desktop\Grafica\myMain.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\myMain.obj
+C:\Users\rodri\Desktop\Grafica\PointLight.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\PointLight.obj
+C:\Users\rodri\Desktop\Grafica\ResourceManager.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\ResourceManager.obj
+C:\Users\rodri\Desktop\Grafica\Shader_light.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Shader_light.obj
+C:\Users\rodri\Desktop\Grafica\Skybox.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Skybox.obj
+C:\Users\rodri\Desktop\Grafica\Sphere.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Sphere.obj
+C:\Users\rodri\Desktop\Grafica\SpotLight.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\SpotLight.obj
+C:\Users\rodri\Desktop\Grafica\Texture.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Texture.obj
+C:\Users\rodri\Desktop\Grafica\Window.cpp;C:\Users\rodri\Desktop\Grafica\Project_.8883FBC7\x64\Debug\Window.obj
+=======
 C:\Users\milli\OneDrive\Desktop\ProjectCG\Camera.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\Camera.obj
 C:\Users\milli\OneDrive\Desktop\ProjectCG\DirectionalLight.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\DirectionalLight.obj
 C:\Users\milli\OneDrive\Desktop\ProjectCG\Light.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\Light.obj
@@ -13,3 +30,4 @@ C:\Users\milli\OneDrive\Desktop\ProjectCG\Sphere.cpp;C:\Users\milli\OneDrive\Des
 C:\Users\milli\OneDrive\Desktop\ProjectCG\SpotLight.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\SpotLight.obj
 C:\Users\milli\OneDrive\Desktop\ProjectCG\Texture.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\Texture.obj
 C:\Users\milli\OneDrive\Desktop\ProjectCG\Window.cpp;C:\Users\milli\OneDrive\Desktop\ProjectCG\Project_.8883FBC7\x64\Debug\Window.obj
+>>>>>>> origin/main
