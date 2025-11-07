@@ -32,7 +32,7 @@ public:
     Model PiramideRikoche;
     Model PiramideTotoro;
 
-    // Lista de modelos para el Zoológico
+    // Lista de modelos para el Zoolï¿½gico
     std::vector<Animal> Zoologico;
 
     // Modelos Principales
@@ -51,6 +51,8 @@ public:
 	Model gato_universo_totoro;
 
 	Model tortuga_universo_totoro;
+
+    // Modelos de cada universo
     
     //...
 };
