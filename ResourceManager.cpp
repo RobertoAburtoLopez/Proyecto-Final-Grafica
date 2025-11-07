@@ -51,6 +51,7 @@ ResourceManager::ResourceManager() {
 
     // Modelos de cada universo
     
+<<<<<<< HEAD
     //Estructuras
 
     Entrada_M.LoadModel("Modelos/Estructuras/pilares.obj");
@@ -59,5 +60,16 @@ ResourceManager::ResourceManager() {
     Cartel_M.LoadModel("Modelos/Estructuras/cartel.obj");
     Guardianes_M.LoadModel("Modelos/Estructuras/guardianes.obj");
 
+=======
+<<<<<<< HEAD
+    //Universo Chilly Willy
+    Lago.LoadModel("Modelos/Chilly Willy/Lago/lago.obj");
+	Arbol_Hielo.LoadModel("Modelos/Chilly Willy/Arbol_Hielo/arbol_hielo.obj");
+	Iglu.LoadModel("Modelos/Chilly Willy/Iglu/Iglu.obj");
+	Anuncio.LoadModel("Modelos/Chilly Willy/Anuncio/anuncio.obj");
+	Animalitos.LoadModel("Modelos/Chilly Willy/Animalitos/animalitos.obj");
+=======
+>>>>>>> origin/main
+>>>>>>> origin/main
     //...
 }
