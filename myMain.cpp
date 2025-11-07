@@ -354,6 +354,8 @@ int main()
 			{10.0f, 0.0f, 80.0f},		// Panda Rojo
 			{0.0f, 0.0f, 80.0f},		// Orangutan
 			{-10.0f, 0.0f, 80.0f}		// Pedro
+			
+
 		};
 		for (size_t i = 0; i < resources.Zoologico.size(); i++)
 			RenderModel(modelZoo, uniformModel, origen, posAnimals[i], resources.Zoologico[i].modelo);
@@ -402,10 +404,13 @@ int main()
 		// Piramide de Totoro
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.PiramideTotoro);
+		
 
 		// Totoro (Ō-Totoro)
 		pos = glm::vec3(0.0f, 30.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro);
+
+		
 
 		// Totoro mediano (Chū-Totoro)
 		pos = glm::vec3(10.0f, 35.0f, 20.0f);
@@ -414,6 +419,23 @@ int main()
 		// Totoro chiquito (Chibi-Totoro)
 		pos = glm::vec3(-7.0f, 35.0f, 20.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
+
+		pos = glm::vec3(-190.0f, 0.0f, -180.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.conejo_universo_totoro),
+		
+		pos = glm::vec3(0.0f, 200.0f, 0.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.buho_universo_totoro),
+
+		pos = glm::vec3(-200.0f, 0.0f, 300.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.tortuga_universo_totoro),
+
+		pos = glm::vec3(-100.0f, 0.0f, 400.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.Totoro),
+
+		pos = glm::vec3(-190.0f, 0.0f, 400.0f);
+		RenderModel(modelTotoro, uniformModel, origenTotoro, pos, resources.gato_universo_totoro),
+		
+
 
 		// ------------------------------------------------------------------ Modelos con Blending (transparencia o traslucidez)
 		glEnable(GL_BLEND);

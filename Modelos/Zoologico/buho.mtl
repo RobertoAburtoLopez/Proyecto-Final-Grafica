@@ -1,7 +1,7 @@
-# Blender 4.5.2 LTS MTL File: 'None'
+# Blender 4.5.4 LTS MTL File: 'Untitled.blend'
 # www.blender.org
 
-newmtl tripo_mat_ccb0817d-4ff5-4a11-bb1d-ccbd93f94bfa
+newmtl tripo_mat_ccb0817d-4ff5-4a11-bb1d-ccbd93f94bfa.001
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
@@ -10,7 +10,5 @@ d 1.000000
 illum 2
 map_Kd buho_textura_0.jpg
 map_Ns buho1.jpg
-map_Pr buho1.jpg
 map_refl buho.jpg
-map_Pm buho.jpg
 map_Bump -bm 1.000000 buho_textura_2.jpg

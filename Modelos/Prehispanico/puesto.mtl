@@ -1,0 +1,16 @@
+# Blender 4.5.2 LTS MTL File: 'None'
+# www.blender.org
+
+newmtl tripo_mat_52f8564a-6304-4256-af61-6f1708a6ac03
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textura_puesto_2.jpg
+map_Ns textura_puesto_4.jpg
+map_Pr textura_puesto_4.jpg
+map_refl textura_puesto_3.jpg
+map_Pm textura_puesto_3.jpg
+map_Bump -bm 1.000000 textura_puesto_0.jpg

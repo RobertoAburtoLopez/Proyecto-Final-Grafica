@@ -18,14 +18,14 @@ ResourceManager::ResourceManager() {
     croquisTexture = Texture("Texturas/Croquis.jpg");  croquisTexture.LoadTextureA();
 
     // Modelos de las piramides
-    ArenaCentral.LoadModel("Modelos/Prehispanico/Arena Central.obj");
+   /* ArenaCentral.LoadModel("Modelos/Prehispanico/Arena Central.obj");
     PiramideChicken.LoadModel("Modelos/Piramides/Piramide de la Venta.obj");
     PiramideChilly.LoadModel("Modelos/Piramides/Piramide de Quetzalcoatl.obj");
-    PiramideRikoche.LoadModel("Modelos/Piramides/Templo de Lucha.obj");
+    PiramideRikoche.LoadModel("Modelos/Piramides/Templo de Lucha.obj");*/
     PiramideTotoro.LoadModel("Modelos/Piramides/Templo de Kukulcan.obj");
 
-    // Modelos de los animales del Zoológico
-    Zoologico = 
+     //Modelos de los animales del Zoológico
+    /*Zoologico = 
     {
         {"Zorro",        "Modelos/Zoologico/Zorro.obj"},
         {"Tigre",        "Modelos/Zoologico/Tigre.obj"},
@@ -34,9 +34,11 @@ ResourceManager::ResourceManager() {
         {"Panda Rojo",   "Modelos/Zoologico/Panda Rojo.obj"},
         {"Orangutan",    "Modelos/Zoologico/Orangutan.obj"},
         {"Mapache",      "Modelos/Zoologico/Mapache.obj"}
+        
+        
     };
     for (auto& animal : Zoologico)
-        animal.modelo.LoadModel(animal.ruta);
+        animal.modelo.LoadModel(animal.ruta);*/
 
     // Personajes principales
     Chicken_Little.LoadModel("Modelos/Chicken Little/Chicken Little.obj");
@@ -47,6 +49,16 @@ ResourceManager::ResourceManager() {
     Totoro_chiquito.LoadModel("Modelos/Totoro/Totoro_chiquito.obj");
 
     // Modelos de cada universo
+
+
+	//modelos de totoro
+	conejo_universo_totoro.LoadModel("Modelos/Zoologico/conejo.obj");
+	buho_universo_totoro.LoadModel("Modelos/Zoologico/buho.obj");
+	gato_universo_totoro.LoadModel("Modelos/Zoologico/gato.obj");
+	tortuga_universo_totoro.LoadModel("Modelos/Zoologico/tortuga.obj");
+
+    
+
     
     //...
 }
