@@ -9,7 +9,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_lentes.png
+=======
 map_Kd lentes.png
+>>>>>>> origin/main
 
 newmtl Material_1.001
 Ns 159.999985
@@ -19,7 +23,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_ojos.png
+=======
 map_Kd ojos.png
+>>>>>>> origin/main
 
 newmtl Material_10.001
 Ns 159.999985
@@ -29,7 +37,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_cejas.png
+=======
 map_Kd cejas.png
+>>>>>>> origin/main
 
 newmtl Material_11.001
 Ns 159.999985
@@ -39,7 +51,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_cabello.png
+=======
 map_Kd cabello.png
+>>>>>>> origin/main
 
 newmtl Material_12.001
 Ns 159.999985
@@ -49,7 +65,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_cabeza.png
+=======
 map_Kd cabeza.png
+>>>>>>> origin/main
 
 newmtl Material_2.001
 Ns 159.999985
@@ -59,7 +79,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_base_ojos.png
+=======
 map_Kd base_ojos.png
+>>>>>>> origin/main
 
 newmtl Material_3.001
 Ns 159.999985
@@ -79,7 +103,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_lengua.png
+=======
 map_Kd lengua.png
+>>>>>>> origin/main
 
 newmtl Material_5.001
 Ns 159.999985
@@ -89,7 +117,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_patas.png
+=======
 map_Kd patas.png
+>>>>>>> origin/main
 
 newmtl Material_6.001
 Ns 159.999985
@@ -99,7 +131,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_cola.png
+=======
 map_Kd cola.png
+>>>>>>> origin/main
 
 newmtl Material_7.002
 Ns 159.999985
@@ -109,7 +145,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_ropa_beisbol.png
+=======
 map_Kd ropa_beisbol.png
+>>>>>>> origin/main
 
 newmtl Material_8.001
 Ns 159.999985
@@ -119,7 +159,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1000.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd Chicken_cresta.png
+=======
 map_Kd cresta.png
+>>>>>>> origin/main
 
 newmtl Material_9.001
 Ns 159.999985

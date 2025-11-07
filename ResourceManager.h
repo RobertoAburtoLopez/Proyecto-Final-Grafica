@@ -41,7 +41,18 @@ public:
     Model Rikoche;
     Model Totoro, Totoro_mediano, Totoro_chiquito;
 
+<<<<<<< HEAD
+    //Modelos Universo Chilly Willy
+    Model Lago;
+	Model Arbol_Hielo;
+    Model Iglu;
+    Model Anuncio;
+    Model Animalitos;
+    
+
+=======
     // Modelos de cada universo
+>>>>>>> origin/main
     
     //...
 };
