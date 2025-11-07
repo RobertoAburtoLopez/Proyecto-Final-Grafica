@@ -522,6 +522,7 @@ int main()
 		// -------------------------------- ENTRADA -------------------------------------
 		
 
+
 		//Instancia de pilares
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -2.6f, 850.0f));
@@ -546,7 +547,8 @@ int main()
 
 		// Cartel
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 44.0f, 0.0f)); // Ajustada por escala
+		model = glm::translate(model, glm::vec3(0.0f, 52.0f, 0.0f)); // Ajustada por escala
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.Cartel_M.RenderModel();
 
@@ -564,8 +566,8 @@ int main()
 		toffset = glm::vec2(toffsetLetrero, toffsetLetrerov);
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(20.0f, 150.0f, 900.0f));
-		model = glm::scale(model, glm::vec3(300.0f, 150.0f, 300.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 150.0f, 870.0f));
+		model = glm::scale(model, glm::vec3(400.0f, 190.0f, 300.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		/*color = glm::vec3(1.0f, 0.0f, 0.0f);
