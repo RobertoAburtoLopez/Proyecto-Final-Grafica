@@ -280,6 +280,8 @@ int main()
 	// Variables uniform
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 			uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;
+	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0, 
+			uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
 
 	// Vector de proyección
 	glm::mat4 projection = glm::perspective(
@@ -428,6 +430,7 @@ int main()
 			Vegetacion   [1]
 			Letrero      [2]
 
+				
 		*/
 
 		// Suelo
@@ -456,6 +459,11 @@ int main()
 		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
 
 		/* ------------------------------------------------------------------ Universo de Chicken Little*/
+		// ------------------------------------------------------------------ Arena Central
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.ArenaCentral);
+
+		// ------------------------------------------------------------------ Universo de Chicken Little
 		
 		// Piramide de Chicken Little
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -471,6 +479,12 @@ int main()
 		 Árboles*/
 	
 		/* ------------------------------------------------------------------ Universo de Chilly Willy*/
+		// Personajes secundarios
+		// Edificios
+		// Vehiculos
+		// Árboles
+	
+		// ------------------------------------------------------------------ Universo de Chilly Willy
 
 		// Piramide de Chilli Willy
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -576,6 +590,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		// Instanciar modelos aqui...
 
 		glDisable(GL_BLEND);
 

@@ -23,6 +23,7 @@ void main()
 	vCol = vec4(0.0, 1.0, 0.0, 1.0f);
 	vColor=vec4(color,1.0f);
 	TexCoord = tex + textureOffset;
+	TexCoord = tex;
 	//para tomar las Transformaciones geométricas y la transpuesta es para que las escalas se inviertan en caso de escalas no uniformes en las normales
 	Normal = mat3(transpose(inverse(model))) * norm;
 	

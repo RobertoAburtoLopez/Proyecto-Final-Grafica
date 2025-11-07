@@ -35,6 +35,7 @@ public:
 
 
     // Lista de modelos para el Zool�gico
+    // Lista de modelos para el Zool�gico
     std::vector<Animal> Zoologico;
 
     // Modelos Principales
@@ -51,4 +52,5 @@ public:
     Model EntradaPuertaIzquierda_M;
     Model Cartel_M;
     Model Guardianes_M;
+    //...
 };

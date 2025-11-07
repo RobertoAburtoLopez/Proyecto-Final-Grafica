@@ -8,6 +8,7 @@ ResourceManager::ResourceManager() {
     blueSky.push_back("Texturas/Skybox/blueSky/izquierda.png");		// left
     blueSky.push_back("Texturas/Skybox/blueSky/abajo.png");			// bottom
     blueSky.push_back("Texturas/Skybox/blueSky/arriba.png");		// up (girar 90� en sentido antihorario)
+    blueSky.push_back("Texturas/Skybox/blueSky/arriba.png");		// up (girar 90� en sentido antihorario)
     blueSky.push_back("Texturas/Skybox/blueSky/atras.png");			// back
     blueSky.push_back("Texturas/Skybox/blueSky/enfrente.png");		// front
     skybox = Skybox(blueSky);
@@ -25,6 +26,7 @@ ResourceManager::ResourceManager() {
     PiramideRikoche.LoadModel("Modelos/Piramides/Templo de Lucha.obj");
     PiramideTotoro.LoadModel("Modelos/Piramides/Templo de Kukulcan.obj");
 
+    // Modelos de los animales del Zool�gico
     // Modelos de los animales del Zool�gico
     Zoologico = 
     {
@@ -57,4 +59,5 @@ ResourceManager::ResourceManager() {
     Cartel_M.LoadModel("Modelos/Estructuras/cartel.obj");
     Guardianes_M.LoadModel("Modelos/Estructuras/guardianes.obj");
 
+    //...
 }
