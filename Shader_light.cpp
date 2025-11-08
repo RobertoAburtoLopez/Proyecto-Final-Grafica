@@ -91,7 +91,6 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 	uniformShininess = glGetUniformLocation(shaderID, "material.shininess");
 	uniformEyePosition = glGetUniformLocation(shaderID, "eyePosition");
 	uniformColor = glGetUniformLocation(shaderID, "color");
-	uniformTextureOffset = glGetUniformLocation(shaderID, "textureOffset");
 
 	uniformPointLightCount = glGetUniformLocation(shaderID, "pointLightCount");
 
@@ -197,17 +196,15 @@ GLuint Shader::GetEyePositionLocation()
 {
 	return uniformEyePosition;
 }
-
-GLuint Shader::getColorLocation()
-{
-	return uniformColor;
-}
-
 GLuint Shader::GetTextureOffsetLocation()
 {
 	return uniformTextureOffset;
 }
 
+GLuint Shader::getColorLocation()
+{
+	return uniformColor;
+}
 void Shader::SetDirectionalLight(DirectionalLight * dLight)
 {
 	dLight->UseLight(uniformDirectionalLight.uniformAmbientIntensity, uniformDirectionalLight.uniformcolor,

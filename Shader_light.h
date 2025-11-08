@@ -47,7 +47,6 @@ private:
 	int spotLightCount;
 	GLuint shaderID, uniformProjection, uniformModel, uniformColor, uniformView, uniformEyePosition,
 		uniformSpecularIntensity, uniformShininess, uniformTextureOffset;
-		uniformSpecularIntensity, uniformShininess;
 
 	struct {
 		GLuint uniformcolor;

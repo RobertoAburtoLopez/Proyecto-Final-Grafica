@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 
+// ---------------------------------------------------------------------- === Estructuras de Datos ===
 struct Animal 
 {
     std::string nombre;
@@ -14,54 +15,82 @@ struct Animal
 
 class ResourceManager {
 public:
-    // Constructor
+    // ------------------------------------------------------------------ === Constructor de Clase ===
+
     ResourceManager();
 
-    // Skybox
+    // ------------------------------------------------------------------ === Skybox ===
+
     Skybox skybox;
 
-    // Texturas
+    // ------------------------------------------------------------------ === Texturas ===
+
     Texture plainTexture;
     Texture pastoTexture;
     Texture croquisTexture;
     Texture LetreroTexture;
 
-    // Modelos para las piramides
+    // ------------------------------------------------------------------ === Arena Central ===
+
     Model ArenaCentral;
+
+    Model Guardianes_M;
+
+    Model Entrada_M;
+    Model EntradaPuertaDerecha_M;
+    Model EntradaPuertaIzquierda_M;
+    Model Cartel_M;
+    
+    std::vector<Model> DecoracionCentral;
+
+    // ------------------------------------------------------------------ === Piramides ===
+    
     Model PiramideChicken;
     Model PiramideChilly;
     Model PiramideRikoche;
     Model PiramideTotoro;
 
+    // ------------------------------------------------------------------ === Animales Zoológico ===
 
-    // Lista de modelos para el Zoolï¿½gico
-    // Lista de modelos para el Zoolï¿½gico
     std::vector<Animal> Zoologico;
 
-    // Modelos Principales
-    Model Chicken_Little;
+    // ------------------------------------------------------------------ === Personajes Principales ===
+
+    Model ChickenLittle;
     Model Chilly_Willy;
     Model Rikoche;
     Model Totoro, Totoro_mediano, Totoro_chiquito;
 
-<<<<<<< HEAD
-    //Modelos Universo Chilly Willy
+    // ------------------------------------------------------------------ === Universo Chiquito Chicken ===
+
+    std::vector<Model> EdificiosLittle;
+
+    Model CalleChicken;
+    Model CieloHexagonal;
+    Model Hexagono;
+
+    Model MariposaAzul, MariposaAzul_AlaDerecha, MariposaAzul_AlaIzquierda;
+
+    std::vector<Model> Arboles;
+
+    Model AbbyPatosa, Runt, PezOutWater, Kirby, BuckGallo, Melvin, Tina, Ace, RobotAlien, TheDog;
+
+    // ------------------------------------------------------------------ === Universo Chilly Willy ===
+
     Model Lago;
-	Model Arbol_Hielo;
+    Model Arbol_Hielo;
     Model Iglu;
     Model Anuncio;
     Model Animalitos;
-    
 
-=======
-    // Modelos de cada universo
->>>>>>> origin/main
+    // ------------------------------------------------------------------ === Universo Rikoche ===
+     
+     
     
-    // Estructuras
-    Model Entrada_M;
-    Model EntradaPuertaDerecha_M;
-    Model EntradaPuertaIzquierda_M;
-    Model Cartel_M;
-    Model Guardianes_M;
-    //...
+    // ------------------------------------------------------------------ === Universo Totoro ===
+    Model conejo_universo_totoro;
+    Model buho_universo_totoro;
+    Model tortuga_universo_totoro;
+    Model gato_universo_totoro;
+
 };
