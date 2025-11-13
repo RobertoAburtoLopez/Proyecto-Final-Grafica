@@ -1,5 +1,8 @@
 # Proyecto-Final-Grafica
 
+Link al drive donde se encuentran carpetas de modelos y texturas:
+https://drive.google.com/drive/folders/14kJ_tFUBCukSjgVTjnaZ2Kf49OqMjyT3?usp=sharing
+
 Pasos para configurar el proyecto:
 
 1. En visual basic crear un nuevo proyecto vacio llamado "ProjectCG"
