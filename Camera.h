@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <glew.h>
 
@@ -20,6 +20,13 @@ public:
 	glm::vec3 getCameraDirection();
 	glm::mat4 calculateViewMatrix();
 
+	void setAerialMode(bool aerial);	// Cambiar modo de cámara
+	bool isAerialMode();				// Verificar si está en modo aéreo
+
+	void setCornerCameraMode(bool cornerMode);	// Activar/desactivar modo de c�maras de esquina
+	bool isCornerCameraMode();					// Verificar si est� en modo de c�maras de esquina
+	void updateCornerCamera(int cornerIndex, glm::vec3 center);	// Actualizar posici�n de c�mara de esquina
+
 	~Camera();
 
 private:
@@ -34,6 +41,10 @@ private:
 
 	GLfloat moveSpeed;
 	GLfloat turnSpeed;
+
+	bool aerialMode;		// Modo de cámara aérea
+	GLfloat aerialHeight;	// Altura fija para modo aéreo
+	bool cornerCameraMode;	// Modo de c�maras de esquina
 
 	void update();
 };
