@@ -1,5 +1,7 @@
 ﻿
 #define STB_IMAGE_IMPLEMENTATION	//	Para cargar imágenes
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
 #include <stdio.h>					//			...
 #include <string.h>					//			...
 #include <cmath>					//			...
@@ -31,6 +33,20 @@
 #include <chrono>					//			...
 //#include<assimp/Importer.hpp>		// Para probar el importer
 
+// ------------------------------------------------------------------ Audio
+ma_engine engine;
+ma_sound soundQ[5];
+ma_sound ambiente;
+int currentQuadrant = -1;
+ma_sound soundZona;
+bool zonaActiva = false;
+bool sonidoCargado = false;
+
+// ------------------------------------------------------------------ Skybox
+float cieloTime = 0.0f, cielo_max = 2000.0f;
+int cieloActual = 0;
+
+
 // ------------------------------------------------------------------ Ventana
 
 Window mainWindow;
@@ -40,8 +56,16 @@ std::vector<Shader> shaderList;		// Vector de Shaders
 
 // ------------------------------------------------------------------ Camara
 
-Camera camera;
+Camera Pov3erCamera;
+Camera PovAereaCamera;
+Camera PovSitesCamera;
 
+Camera* cameraActual = &Pov3erCamera;
+bool cPressed = false;
+
+
+
+glm::vec3 offsetChicken_camera = glm::vec3(0.0f, 70.0f, 170.0f);
 static double limitFPS = 1.0 / 60.0;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -63,11 +87,16 @@ Material Material_Chicken_piel, Material_Chicken_piernas;
 unsigned int pointLightCount = 0;
 unsigned int spotLightCount = 0;
 
-DirectionalLight mainLight;					// Luz Direccional (Sol)
+DirectionalLight mainLight[5];					// Luz Direccional (Sol)
 PointLight PL_0[MAX_POINT_LIGHTS];			// Arreglos de luces PointLight
 SpotLight PL_1[MAX_SPOT_LIGHTS];			//.
 SpotLight SP_RGB[MAX_SPOT_LIGHTS];			// Arreglos de luces SpotLight
 SpotLight SP_lamparas[MAX_SPOT_LIGHTS];		//.
+
+glm::vec3 posLamp1 = glm::vec3(0);
+glm::vec3 posLamp2 = glm::vec3(0);
+glm::vec3 posLamp3 = glm::vec3(0);
+glm::vec3 posLamp4 = glm::vec3(0);
 
 // ------------------------------------------------------------------ Animacion
 
@@ -95,7 +124,7 @@ float dirChicken1 = 0.01f;
 float dirChicken2 = 0.05f;
 float dirChicken3 = 0.01f;
 
-glm::vec3 posChicken = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 posChicken = glm::vec3(0.0f, 0.0f, 1000.0f);
 glm::vec3 dirChicken = glm::vec3(0);
 float speedChicken = 0.35f;
 float giroChicken = 0.0f;
@@ -118,6 +147,8 @@ float rotacionPuertaDerecha = 0.0f;      // Rotación de puerta derecha (0 a 90 
 float deslizamientoPuertaIzq = 0.0f;     // Deslizamiento puerta izquierda (0 a 20 unidades)
 bool puertasAbiertas = false;             // Estado de las puertas
 bool animandoPuertas = false;             // Bandera para controlar animación
+
+
 
 // ------------------------------------------------------------------ Funciones
 
@@ -225,45 +256,76 @@ void CreateShaders()
 // Función - Creamos la iluminación
 void SetLights()
 {
-	//luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(
-		0.83f, 0.78f, 0.92f,	// Color
-		1.0f, 0.3f,				// Intensidades ambiente y difusa más bajas
-		-1.0f, 0.0f, 0.0f		// Dirección
+	// Amanecer
+	mainLight[0] = DirectionalLight(
+		0.65f, 0.78f, 1.0f,   
+		0.35f, 0.15f,       
+		-0.2f, -1.0f, -0.1f
 	);
 
-	// Arreglo 1 para cambio de luces
-	// Verde
-	SP_lamparas[0] = SpotLight(0.0f, 1.0f, 0.0f,// Color
-		1.0f, 5.0f,                             // Intensidad ambiental | Intensidad Difusa
-		20.0f, 15.0f, 0.0f,                     // Posición
-		0.0f, -1.0f, 0.0f,                      // Dirección de la luz
-		0.2f, 0.0f, 0.0f,						// Atenuación (Constante | Lineal | Exponencial)
-		20.0f);                                 // Ángulo edge
+	// Mañana
+	mainLight[1] = DirectionalLight(
+		1.0f, 0.82f, 0.90f,  
+		0.45f, 0.25f,
+		-0.3f, -1.0f, -0.2f
+	);
+
+	// Atardecer
+	mainLight[2] = DirectionalLight(
+		1.0f, 0.72f, 0.40f, 
+		0.30f, 0.35f,
+		-0.1f, -1.0f, -0.1f
+	);
+
+	// Anochecer
+	mainLight[3] = DirectionalLight(
+		0.72f, 0.40f, 0.72f,
+		0.30f, 0.35f,
+		0.0f, -1.0f, 0.0f
+	);
+
+	// Estrellado
+	mainLight[4] = DirectionalLight(
+		0.10f, 0.14f, 0.42f, 
+		0.20f, 0.35f,
+		0.0f, -1.0f, 0.0f
+	);
+
+
+// Verde
+	SP_lamparas[0] = SpotLight(0.0f, 1.0f, 0.0f,  // Color
+		1.0f, 5.0f,                               // Intensidad ambiental | Intensidad difusa
+		20.0f, 15.0f, 0.0f,                        // Posición
+		0.0f, -1.0f, 0.0f,                         // Dirección
+		0.2f, 0.009f, 0.0f,                          // Atenuación (Constante | Lineal | Exponencial)
+		20.0f);                                     // Ángulo edge
 	spotLightCount++;
+
 	// Azul
-	SP_lamparas[1] = SpotLight(0.0f, 0.0f, 1.0f,// Color
-		1.0f, 5.0f,                             // Intensidad ambiental | Intensidad Difusa
-		10.0f, 15.0f, 0.0f,                     // Posición
-		0.0f, -1.0f, 0.0f,                      // Dirección de la luz
-		0.0f, 0.01f, 0.0f,						// Atenuación (Constante | Lineal | Exponencial)
-		20.0f);                                 // Ángulo edge
+	SP_lamparas[1] = SpotLight(0.0f, 0.0f, 1.0f,
+		1.0f, 5.0f,
+		10.0f, 15.0f, 10.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.009f, 0.0f,
+		20.0f);
 	spotLightCount++;
+
 	// Roja
-	SP_lamparas[2] = SpotLight(1.0f, 0.0f, 0.0f,// Color
-		1.0f, 5.0f,                             // Intensidad ambiental | Intensidad Difusa
-		0.0f, 15.0f, 0.0f,                      // Posición
-		0.0f, -1.0f, 0.0f,                      // Dirección de la luz
-		0.0f, 0.0f, 0.01f,						// Atenuación (Constante | Lineal | Exponencial)
-		20.0f);                                 // Ángulo edge
+	SP_lamparas[2] = SpotLight(1.0f, 0.0f, 0.0f,
+		1.0f, 5.0f,
+		-10.0f, 15.0f, 10.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.009f, 0.01f,
+		20.0f);
 	spotLightCount++;
+
 	// Blanca
-	SP_lamparas[3] = SpotLight(1.0f, 1.0f, 1.0f,// Color
-		1.0f, 5.0f,                             // Intensidad ambiental | Intensidad Difusa
-		-10.0f, 15.0f, 0.0f,                    // Posición
-		0.0f, -1.0f, 0.0f,                      // Dirección de la luz
-		0.2f, 0.01f, 0.01f,						// Atenuación (Constante | Lineal | Exponencial)
-		20.0f);                                 // Ángulo edge
+	SP_lamparas[3] = SpotLight(1.0f, 1.0f, 1.0f,
+		1.0f, 5.0f,
+		-20.0f, 15.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.2f, 0.009f, 0.01f,
+		20.0f);
 	spotLightCount++;
 
 	// Arreglo 2 para cambio de luces
@@ -325,22 +387,18 @@ void RenderMeshWithTexture(Mesh* mesh, glm::vec3 color, glm::vec3 position, glm:
 	mesh->RenderMesh();
 }
 
-// Función - Animacion Totoro (caminata)
-void animatedTotoro()
+// Función - Animaciones Universo Totoro
+void animationsTotoro()
 {
+	// Caminata de Totoro
 	movTotoro += dirTotoro1;
 	movBrazosTotoro += dirTotoro2;
 	movPiernasTotoro += dirTotoro3;
 
-	// límites totoro
 	if (movTotoro > 50.0f) dirTotoro1 = -0.25f;
 	else if (movTotoro < -50.0f) dirTotoro1 = 0.25f;
-
-	// límites brazos
 	if (movBrazosTotoro > 10.0f) dirTotoro2 = -0.5f;
 	else if (movBrazosTotoro < -10.0f) dirTotoro2 = 0.5f;
-
-	// límites piernas
 	if (movPiernasTotoro > 20.0f) dirTotoro3 = -0.7f;
 	else if (movPiernasTotoro < -20.0f) dirTotoro3 = 0.7f;
 }
@@ -355,8 +413,8 @@ void animationsChickenLittle()
 	// Movimiento de Manos y Pies (ciclico)
 	if (movChicken > 50.0f) dirChicken1 = -0.25f;
 	else if (movChicken < -50.0f) dirChicken1 = 0.25f;
-	if (movBrazosChicken > 10.0f) dirChicken2 = -0.5f;
-	else if (movBrazosChicken < -10.0f) dirChicken2 = 0.5f;
+	if (movBrazosChicken > 30.0f) dirChicken2 = -0.5f;
+	else if (movBrazosChicken < -30.0f) dirChicken2 = 0.5f;
 	if (movPiernaChicken > 20.0f) dirChicken3 = -0.7f;
 	else if (movPiernaChicken < -20.0f) dirChicken3 = 0.7f;
 
@@ -380,6 +438,10 @@ void animationsChickenLittle()
 		giroChicken -= speedGiroChicken;
 	}
 
+	// Movimiento de las alas de la mariposa (ciclico)
+	tiempo += deltaTiempo;
+	angulo = 35.0f * sin(speedAleteo * tiempo);
+
 	// Movimiento de los hexagonos del cielo
 	posHexagonos += speedHexagonos;
 	if (posHexagonos < -637.0f)
@@ -392,10 +454,92 @@ void animationsChickenLittle()
 	}
 }
 
+// Función - Animacion de la Entrada Principal
+void animationEntrada()
+{
+	if (mainWindow.getsKeys()[GLFW_KEY_O])
+	{
+		if (!animandoPuertas)
+		{
+			puertasAbiertas = !puertasAbiertas;
+			animandoPuertas = true;
+			mainWindow.getsKeys()[GLFW_KEY_O] = false;
+		}
+	}
+	if (animandoPuertas)
+	{
+		if (puertasAbiertas)  // Abrir puertas
+		{
+			if (rotacionPuertaDerecha < 90.0f)
+			{
+				rotacionPuertaDerecha += 2.0f * deltaTime;
+				if (rotacionPuertaDerecha > 90.0f)
+					rotacionPuertaDerecha = 90.0f;
+			}
+
+			if (rotacionPuertaDerecha >= 90.0f)
+			{
+				animandoPuertas = false;
+			}
+		}
+		else  // Cerrar puertas
+		{
+			if (rotacionPuertaDerecha > 0.0f)
+			{
+				rotacionPuertaDerecha -= 2.0f * deltaTime;
+				if (rotacionPuertaDerecha < 0.0f)
+					rotacionPuertaDerecha = 0.0f;
+			}
+
+			if (rotacionPuertaDerecha <= 0.0f)
+			{
+				animandoPuertas = false;
+			}
+		}
+	}
+}
+
+// Funcion - Audio
+void initAudio() {
+	// Inicializar engine una sola vez
+	ma_engine_init(NULL, &engine);
+
+	// Audio de fondo (loop)
+	ma_sound_init_from_file(&engine, "Audios/Audio Maya.mp3",
+	MA_SOUND_FLAG_DECODE, NULL, NULL, &ambiente);
+	ma_sound_set_looping(&ambiente, MA_TRUE);
+	ma_sound_set_volume(&ambiente, 0.02f);
+	ma_sound_start(&ambiente);
+
+	// Sonidos por zonas
+	ma_sound_init_from_file(&engine, "Audios/Mucha Lucha - Theme Song.mp3", 0, NULL, NULL, &soundQ[0]);
+	ma_sound_init_from_file(&engine, "Audios/Chilly Willy - Theme Song.mp3", 0, NULL, NULL, &soundQ[1]);
+	ma_sound_init_from_file(&engine, "Audios/Chicken Little - Ain't No Mountain High.mp3", 0, NULL, NULL, &soundQ[2]);
+	ma_sound_init_from_file(&engine, "Audios/My Neighbor Totoro - Theme Song.mp3", 0, NULL, NULL, &soundQ[3]);
+	ma_sound_init_from_file(&engine, "Audios/Campana - Ring.mp3", 0, NULL, NULL, &soundQ[4]);
+
+	for (int i = 0; i < 5; i++) {
+		ma_sound_stop(&soundQ[i]);
+		ma_sound_set_volume(&soundQ[i], 0.0f);
+		ma_sound_set_looping(&soundQ[i], MA_FALSE);
+	}
+}
+
+// Funcion - Obtener Audio por zona
+int getQuadrant(glm::vec3 pos) {
+	if (pos.x >= 375 && pos.z >= 375) return 0; // Mucha lucha
+	if (pos.x < -375 && pos.z >= 375) return 1; // Chilly Willy
+	if (pos.x < -375 && pos.z < -375) return 2; // Chicken Little
+	if (pos.x > 375 && pos.z < -375) return 3; // Totoro
+	else return 4;
+}
+
+
 // -------------------------------------------------------------------------- Main
 int main()
 {
-	auto start = std::chrono::high_resolution_clock::now(); // Inicio del cronómetro
+	initAudio();
+	auto start = std::chrono::high_resolution_clock::now();
 
 	// Iniciamos el contexto
 	mainWindow = Window(1366, 768); // Resolución: 1280, 1024 or 1024, 768
@@ -455,29 +599,31 @@ int main()
 	glm::vec3 auxscal = glm::vec3(1.0f);	// Para escalar con un vector
 	float scal = 1.0f;						// Para escalar los modelos
 	float rot = 0.0f;						// Para rotar los modelos
+	glm::vec3 posLight = glm::vec3(0);
 	
 	// Variables auxiliares para animaciones
 	glm::mat4 model(1.0);
 	glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 
-	// Ajustes para la cámara
-	camera = Camera(
-		//origenChicken + glm::vec3(325.0f, 50.0f, 325.0f),// Posicion inicial
-		origen + glm::vec3(0.0f, 30.0f, 1050.0f),// Posicion inicial
-		glm::vec3(0.0f, 1.0f, 0.0f),			// Direccion de nuestro "arriba"
-		//-135.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
-		-90.0f, 0.0f,						// Rotacion horizontal | Rotacion vertical
-		4.0f, 0.45f);					// Velocidad de movimiento | Velocidad de rotacion
-	
-	// ------------------------------------------------------------------- KeyFrames
-	// Configuración de KeyFrames del avión
-	anim.KeyFrame[0].gx = 100.0f;
-	anim.KeyFrame[0].gy = 50.0f;
-	anim.KeyFrame[0].gz = 0.0f;
-	anim.KeyFrame[0].angle = 90.0f;
+	// Ajustes para las camaras
+	PovAereaCamera = Camera(glm::vec3(0.0f, 300.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -90.0f, 5.0f, 0.45f);
+	PovSitesCamera = Camera(glm::vec3(0.0f, 50.0f, 300.0f), glm::vec3(0.0f, 1.0f, 0.0f), -180.0f, 0.0f, 5.0f, 0.45f);
+	Pov3erCamera = Camera(posChicken, glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 4.0f, 0.45f);
 
-	// Se indica el total de keyframes cargados
-	anim.FrameIndex = 5;
+	// ------------------------------------------------------------------- KeyFrames
+	
+	// Trayectoria de vuelo de la mariposa
+	// Keyframes de la mariposa (trayectoria más amplia)
+	anim.KeyFrame[0].gx = 100.0f; anim.KeyFrame[0].gy = 50.0f;  anim.KeyFrame[0].gz = 0.0f;    anim.KeyFrame[0].angle = 90.0f;
+	anim.KeyFrame[1].gx = 150.0f; anim.KeyFrame[1].gy = 80.0f;  anim.KeyFrame[1].gz = 30.0f;   anim.KeyFrame[1].angle = 100.0f;
+	anim.KeyFrame[2].gx = 200.0f; anim.KeyFrame[2].gy = 120.0f; anim.KeyFrame[2].gz = 20.0f;   anim.KeyFrame[2].angle = 110.0f;
+	anim.KeyFrame[3].gx = 180.0f; anim.KeyFrame[3].gy = 160.0f; anim.KeyFrame[3].gz = -10.0f;  anim.KeyFrame[3].angle = 120.0f;
+	anim.KeyFrame[4].gx = 130.0f; anim.KeyFrame[4].gy = 140.0f; anim.KeyFrame[4].gz = -30.0f;  anim.KeyFrame[4].angle = 130.0f;
+	anim.KeyFrame[5].gx = 120.0f; anim.KeyFrame[5].gy = 90.0f;  anim.KeyFrame[5].gz = 0.0f;    anim.KeyFrame[5].angle = 140.0f;
+	anim.KeyFrame[6].gx = 110.0f; anim.KeyFrame[6].gy = 70.0f;  anim.KeyFrame[6].gz = 10.0f;   anim.KeyFrame[6].angle = 150.0f;
+	anim.KeyFrame[7].gx = 100.0f; anim.KeyFrame[7].gy = 50.0f;  anim.KeyFrame[7].gz = 0.0f;    anim.KeyFrame[7].angle = 90.0f;
+
+	anim.FrameIndex = 8;
 
 	anim.Instrucciones();
 	anim.LoadFrames();
@@ -491,67 +637,76 @@ int main()
 
 		// Recibir eventos del usuario 
 		glfwPollEvents();
-		/*camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());*/
+		
+		// Modo de Camara
 
-		// Control de modo de cámara
-		if (mainWindow.getsKeys()[GLFW_KEY_Z])
-		{
-			camera.setAerialMode(true);
-			camera.setCornerCameraMode(false); // Desactivar modo de esquinas
-			printf("Camara aerea activada\n");
-			mainWindow.getsKeys()[GLFW_KEY_Z] = false;
+		offsetChicken_camera = glm::vec3(0.0f, 100.0f, 170.0f);
+
+		if (mainWindow.getsKeys()[GLFW_KEY_C] && !cPressed) {
+			cPressed = true;
+
+			if (cameraActual == &Pov3erCamera)
+				cameraActual = &PovAereaCamera;
+			else if (cameraActual == &PovAereaCamera)
+				cameraActual = &PovSitesCamera;
+			else if (cameraActual == &PovSitesCamera)
+				cameraActual = &Pov3erCamera;
 		}
-		if (mainWindow.getsKeys()[GLFW_KEY_X])
-		{
-			camera.setAerialMode(false);
-			camera.setCornerCameraMode(false); // Desactivar modo de esquinas
-			printf("Camara normal activada\n");
-			mainWindow.getsKeys()[GLFW_KEY_X] = false;
+		if (!mainWindow.getsKeys()[GLFW_KEY_C])
+			cPressed = false;
+
+		if (cameraActual == &PovAereaCamera) {
+			cameraActual->aerialKeyControl(mainWindow.getsKeys(), deltaTime, 800.0f);
 		}
-		if (mainWindow.getsKeys()[GLFW_KEY_C])
-		{
-			camera.setCornerCameraMode(true);
-			currentCornerCamera = 0;
-			cornerCameraTimer = 0.0f;
-			camera.updateCornerCamera(currentCornerCamera, origen);
-			printf("Modo de camaras de esquina activado\n");
-			mainWindow.getsKeys()[GLFW_KEY_C] = false;
+		else if (cameraActual == &Pov3erCamera) {
+			cameraActual->setPosYaw(posChicken, giroChicken, offsetChicken_camera);
+		}
+		else if (cameraActual == &PovSitesCamera) {
+			cameraActual->setPosYaw(origenChicken + glm::vec3(375, 200, 375), 45, offsetChicken_camera);
+			cameraActual->setPosYaw(origenChilly + glm::vec3(375, 200, -375), 90, offsetChicken_camera);
+			cameraActual->setPosYaw(origenRikoche + glm::vec3(-375, 200, -375), 135, offsetChicken_camera);
+			cameraActual->setPosYaw(origenTotoro + glm::vec3(-375, 200, 375), 180, offsetChicken_camera);
+		}
+		else {
+			cameraActual->keyControl(mainWindow.getsKeys(), deltaTime);
+			cameraActual->mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 		}
 
-		// Actualizar cámaras de esquina si está activado el modo
-		if (camera.isCornerCameraMode())
-		{
-			cornerCameraTimer += deltaTime;
-			if (cornerCameraTimer >= cornerCameraInterval)
-			{
-				cornerCameraTimer = 0.0f;
-				currentCornerCamera = (currentCornerCamera + 1) % 4; // Rotar entre 0, 1, 2, 3
-				camera.updateCornerCamera(currentCornerCamera, origen);
-				printf("Cambiando a camara de esquina %d\n", currentCornerCamera + 1);
+		// Audio por cada cuadrante
+		glm::vec3 camPos = 100.0f * cameraActual->getCameraPosition();
+		int q = getQuadrant(camPos);
+
+		if (q != currentQuadrant) {
+			// Apagar el sonido anterior (si existe)
+			if (currentQuadrant != -1) {
+				ma_sound_stop(&soundQ[currentQuadrant]);
+				ma_sound_stop(&ambiente);
 			}
-		}
-		else
-		{
-			// Solo permitir control manual si no está en modo de cámaras de esquina
-			camera.keyControl(mainWindow.getsKeys(), deltaTime);
-			camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
-		}
+			// Ajustar volumen del nuevo
+			ma_sound_set_volume(&soundQ[q], 0.25f);
 
+			// Reproducir sonido del nuevo cuadrante
+			ma_sound_start(&soundQ[q]);
+
+			currentQuadrant = q;
+		}
 
 		// Limpiamos la window
 		mainWindow.Clear();
 
 		// Dibujamos el Skybox 
-		resources.skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+
+		cieloTime += deltaTime;
+
+		if (cieloTime >= cielo_max) {
+			cieloTime = 0.0f;
+			cieloActual = (cieloActual + 1) % 5;
+		}
+
+		resources.skybox[cieloActual].DrawSkybox(cameraActual->calculateViewMatrix(), projection);
 
 		// Configuracion para la iluminación
-		
-		// código...
-		
-		// KEYFRAMES -------------------------------------------------------------
-		anim.InputKeyframes(mainWindow.getsKeys());
-		anim.Animate();
+
 
 		// Info en el Shader 
 		shaderList[0].UseShader();
@@ -564,63 +719,35 @@ int main()
 		uniformShininess =			shaderList[0].GetShininessLocation();			// brillo
 		uniformTextureOffset =		shaderList[0].GetTextureOffsetLocation();		// offset de textura
 
-		shaderList[0].SetDirectionalLight(&mainLight);								// iluminación direccional
+		shaderList[0].SetDirectionalLight(&mainLight[cieloActual]);					// iluminación direccional
 		shaderList[0].SetPointLights(PL_0, pointLightCount);						// iluminación pointlight
-		shaderList[0].SetSpotLights(SP_lamparas, spotLightCount);					// iluminación spotlight
+
+		if (mainWindow.getlightOff() < 1.0f)
+		{
+			shaderList[0].SetSpotLights(SP_lamparas, 0);					// iluminación spotlight
+		}
+		else
+		{
+			shaderList[0].SetSpotLights(SP_lamparas, spotLightCount);		// iluminación spotlight
+		}
+		
 
 		glUniformMatrix4fv(uniformProjection,	1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView,			1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		glUniformMatrix4fv(uniformView,			1, GL_FALSE, glm::value_ptr(cameraActual->calculateViewMatrix()));
+		glUniform3f(uniformEyePosition, cameraActual->getCameraPosition().x, cameraActual->getCameraPosition().y, cameraActual->getCameraPosition().z);
 
 		// Inicializar textureOffset con valor por defecto (0, 0) para modelos sin animación de textura
 		toffset = glm::vec2(0.0f, 0.0f);
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 
-		// ------------------------------- ANIMACION DE PUERTA ----------------------------------------------
 
-		  // DETECCIÓN DE TECLA 'O' PARA ABRIR/CERRAR PUERTAS
-		if (mainWindow.getsKeys()[GLFW_KEY_O])
-		{
-			if (!animandoPuertas)
-			{
-				puertasAbiertas = !puertasAbiertas;
-				animandoPuertas = true;
-				mainWindow.getsKeys()[GLFW_KEY_O] = false;
-			}
-		}
+		// ------------------------------------------------------------------ === Animaciones ===
+		anim.InputKeyframes(mainWindow.getsKeys());
+		anim.Animate();
 
-		// ------------------------------- ANIMACION DE PUERTAS ----------------------------------------------
-		if (animandoPuertas)
-		{
-			if (puertasAbiertas)  // Abrir puertas
-			{
-				if (rotacionPuertaDerecha < 90.0f)
-				{
-					rotacionPuertaDerecha += 2.0f * deltaTime;
-					if (rotacionPuertaDerecha > 90.0f)
-						rotacionPuertaDerecha = 90.0f;
-				}
-
-				if (rotacionPuertaDerecha >= 90.0f)
-				{
-					animandoPuertas = false;
-				}
-			}
-			else  // Cerrar puertas
-			{
-				if (rotacionPuertaDerecha > 0.0f)
-				{
-					rotacionPuertaDerecha -= 2.0f * deltaTime;
-					if (rotacionPuertaDerecha < 0.0f)
-						rotacionPuertaDerecha = 0.0f;
-				}
-
-				if (rotacionPuertaDerecha <= 0.0f)
-				{
-					animandoPuertas = false;
-				}
-			}
-		}
+		animationEntrada();
+		animationsChickenLittle();
+		animationsTotoro();
 
 		// ------------------------------------------------------------------ === Primitivas ===
 
@@ -638,7 +765,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -2.6f, 850.0f));
 		model = glm::scale(model, glm::vec3(8.0f, 3.0f, 5.0f));
-		modelaux = model; // Guardamos la transformación base CON escala
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resources.Entrada_M.RenderModel();
 
@@ -686,6 +813,23 @@ int main()
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelBase, uniformModel, origen, pos, resources.NPCS);
 
+		// Iluminaria
+		posLamp1 = glm::vec3(-342, 280, 250); // verde
+		SP_lamparas[0].SetPos(glm::vec3(posLamp1 + posLight));
+
+		posLamp1 = glm::vec3(346, 280, 250);
+		SP_lamparas[1].SetPos(glm::vec3(posLamp1 + posLight));
+
+		posLamp1 = glm::vec3(346, 280, -253);
+		SP_lamparas[2].SetPos(glm::vec3(posLamp1 + posLight));
+
+		posLamp1 = glm::vec3(-346, 280, -245);
+		SP_lamparas[3].SetPos(glm::vec3(posLamp1 + posLight));
+
+		modelBase = glm::mat4(1.0);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelBase, uniformModel, origen, pos, resources.Iluminaria);
+
 		// ------------------------------------------------------------------ === Zoológico ===
 		
 		// Animales
@@ -695,9 +839,6 @@ int main()
 
 		// ------------------------------------------------------------------ === Universo de Chicken Little ===
 		
-		// Llamadas a funciones
-		animationsChickenLittle();
-
 		// Piramide de Chicken Little
 		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -720,19 +861,16 @@ int main()
 
 		// Arboles
 		modelChicken = glm::mat4(1.0);
-		//for (size_t i = 0; i < resources.Arboles.size(); i++) {
-			RenderModel(modelChicken, uniformModel, origenChicken, glm::vec3(0.0f, 0.0f, 0.0f), resources.Arboles[1]);
-		//}
+		for (size_t i = 0; i < resources.Arboles.size(); i++) {
+			RenderModel(modelChicken, uniformModel, origen, glm::vec3(0.0f, 0.0f, 0.0f), resources.Arboles[i]);
+		}
 
 		// Mariposa Azul
 		modelChicken = glm::mat4(1.0);
-		modelChicken = glm::translate(modelChicken, glm::vec3(0.0f + anim.gx, 0.0f + anim.gy, 0.0f + anim.gz));
+		modelChicken = glm::translate(modelChicken, origenChicken + glm::vec3(100.0f + anim.gx, 50.0f + anim.gy, 256.0f + anim.gz));
 		modelChicken = glm::rotate(modelChicken, glm::radians(anim.angle), glm::vec3(0, 1, 0));
 		RenderModel(modelChicken, uniformModel, glm::vec3(0), glm::vec3(0), resources.MariposaAzul);
 		modelaux = modelChicken;
-
-		tiempo += deltaTiempo;
-		angulo = 35.0f * sin(speedAleteo * tiempo);
 
 		// Mariposa Azul - ala izquierda
 		modelChicken = modelaux;
@@ -759,7 +897,7 @@ int main()
 		// Chicken Little - AVATAR
 		modelChicken = glm::mat4(1.0);
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		modelChicken = glm::translate(modelChicken, glm::vec3(0.0f, 0.0f, 1000.0f) + posChicken);
+		modelChicken = glm::translate(modelChicken, posChicken);
 		modelChicken = glm::rotate(modelChicken, glm::radians(180 + giroChicken), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_Chicken_piel.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		RenderModel(modelChicken, uniformModel, glm::vec3(0), glm::vec3(0), resources.ChickenLittle_cuerpo);
@@ -791,53 +929,58 @@ int main()
 
 		// Abby Patosa
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(280.0f, 0.0f, 280.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.AbbyPatosa);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.AbbyPatosa);
 
 		// Runt
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(265.0f, 0.0f, 265.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Runt);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Runt);
+
+		// Camion de Bomberos
+		modelChicken = glm::mat4(1.0);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.CamionBomberos);
 
 		// PezOutWater
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(295.0f, 0.0f, 295.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.PezOutWater);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.PezOutWater);
 
 		// Kirby
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(300.0f, 0.0f, 300.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Kirby);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Kirby);
 
 		// Buck Gallo
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(275.0f, 0.0f, 275.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.BuckGallo);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.BuckGallo);
 
 		// Melvin
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(305.0f, 0.0f, 305.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Melvin);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Melvin);
 
 		// Tina
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(310.0f, 0.0f, 310.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Tina);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Tina);
 
 		// Ace
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(320.0f, 0.0f, 320.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.Ace);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.Ace);
 
 		// Robot Alien
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(320.0f, 0.0f, 320.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.RobotAlien);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.RobotAlien);
 
 		// The Dog
 		modelChicken = glm::mat4(1.0);
-		pos = glm::vec3(325.0f, 0.0f, 325.0f);
-		RenderModel(modelChicken, uniformModel, origenChicken, pos, resources.TheDog);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		RenderModel(modelChicken, uniformModel, origen, pos, resources.TheDog);
 	
 		// ------------------------------------------------------------------ === Universo de Chilly Willy ===
 
@@ -903,14 +1046,11 @@ int main()
 		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelRikoche, uniformModel, origen, pos, resources.ArbolitosRikochet);
 
-		// ------------------------------------------------------------------ === Universo de Totoro ===
-		
-		// Llamadas a las animaciones
-		animatedTotoro();
+		// ------------------------------------------------------------------ === Universo de Totoro ===	
 
 		// Piramide de Totoro
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.PiramideTotoro);
 
 		// Totoro - cuerpo
@@ -942,17 +1082,17 @@ int main()
 
 		// Totoro mediano (Chū-Totoro)
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_mediano);
 
 		// Totoro chiquito (Chibi-Totoro)
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.Totoro_chiquito);
 
 		// Conejo
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.conejo_universo_totoro);
 
 		// Búho
@@ -962,12 +1102,12 @@ int main()
 
 		// Tortuga
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.tortuga_universo_totoro);
 
 		// Gato
 		modelTotoro = glm::mat4(1);
-		pos = glm::vec3(0.0f, -45.0f, 0.0f);
+		pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		RenderModel(modelTotoro, uniformModel, origen, pos, resources.gato_universo_totoro);
 
 		// ------------------------------------------------------------------ === Enable - Modelos con Blending (transparencia o traslucidez) ===
@@ -1002,5 +1142,7 @@ int main()
 		glUseProgram(0);
 		mainWindow.swapBuffers();
 	}	
+
+	ma_engine_uninit(&engine);
 	return 0;
 }
